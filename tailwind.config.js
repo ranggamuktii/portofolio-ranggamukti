@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 import tailwindScollbar from 'tailwind-scrollbar';
+import colors from 'tailwindcss/colors';
 
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -8,6 +9,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+      },
+      colors: {
+        zinc: colors.zinc,
       },
     },
   },
