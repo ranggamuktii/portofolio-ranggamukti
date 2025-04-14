@@ -26,6 +26,10 @@ body {
   @apply text-3xl lg:text-4xl lg:leading-tight font-semibold
 }
 
+.title-1{
+  @apply text-[22px] font-normal
+}
+
 .material-symbols-rounded {
   @apply w-[1em] h-[1em] overflow-hidden;
   font-variation-setting: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
