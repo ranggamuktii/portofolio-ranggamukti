@@ -72,7 +72,7 @@ function Footer() {
             <div>
               <p className="">Socials</p>
               <ul>
-                {sitemap.map(({ label, href }, key) => (
+                {socials.map(({ label, href }, key) => (
                   <li key={key}>
                     <a href={href} target="_blank" className="block text-sm text-zinc-400 py-1 transition-colors hover:text-zinc-200">
                       {label}
