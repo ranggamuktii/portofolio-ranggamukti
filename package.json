@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.3",
+    "gsap": "^3.12.7",
     "lenis": "^1.2.3",
     "portofolio-reactjs": "file:",
     "prop-types": "^15.8.1",

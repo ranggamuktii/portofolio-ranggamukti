@@ -5,7 +5,6 @@ ratings.fill({
   icon: 'star',
   style: { fontVariationSettings: '"FILL" 1' },
 });
-console.log(ratings);
 
 function ReviewCard({ content, imgSrc, name, company }) {
   return (
