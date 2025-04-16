@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 
 // Sample project database - in a real app, this would come from an API or context
 const projectsData = {
-  barcelona: {
-    title: 'Barcelona',
+  pixstock: {
+    title: 'Free stock photo app',
     description: "I designed and developed a landing page website for FC Barcelona. The page highlights the club's history, achievements, and player list, with a modern and responsive design tailored to enhance user experience.",
-    imgSrc: '/barcelona-project.jpg', // Replace with actual path
+    imgSrc: '/project-2.jpg', // Replace with actual path
     technologies: ['HTML', 'CSS', 'Javascript'],
     features: [
       'Responsive Design: The website is fully responsive, ensuring a seamless experience across desktops, tablets, and mobile devices.',
       'Player List Section: A dedicated section showcasing the current squad, including player profiles and positions.',
       'Trophy Showcase: An interactive display of trophies won by the club, highlighting its achievements over the years.',
     ],
-    demoLink: '#',
+    demoLink: 'https://pixstock-official.vercel.app/',
     githubLink: '#',
     totalTech: 3,
     mainFeatures: 3,
@@ -40,8 +40,6 @@ function ProjectDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In a real app, you might fetch this data from an API
-    // For now, we'll use our static data
     setLoading(true);
 
     // Simulate API call delay
@@ -93,24 +91,28 @@ function ProjectDetail() {
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-8">
           <div>
-            <p className="text-zinc-300 mb-10">{project.description}</p>
+            <p className="text-left text-zinc-300 mb-10">{project.description}</p>
 
             {/* Tech Stats */}
             <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="p-4 rounded-2xl bg-zinc-800 ring-1 ring-inset ring-zinc-50/5">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-3 ring-2 ring-inset ring-zinc-50/10 rounded-2xl p-3 hover:bg-zinc-800 transition-colors group">
+                <figure className="bg-zinc-700/50 rounded-lg overflow-hidden w-12 h-12 flex items-center justify-center group-hover:bg-zinc-900 transition-colors">
                   <span className="material-symbols-rounded text-sky-400">code</span>
-                  <span className="text-2xl">{project.totalTech}</span>
+                </figure>
+                <div>
+                  <h3 className="text-left font-semibold text-2xl">{project.totalTech}</h3>
+                  <p className="text-zinc-400 text-sm">Total Teknologi</p>
                 </div>
-                <div className="text-zinc-400 text-sm">Total Teknologi</div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-zinc-800 ring-1 ring-inset ring-zinc-50/5">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-3 ring-2 ring-inset ring-zinc-50/10 rounded-2xl p-3 hover:bg-zinc-800 transition-colors group">
+                <figure className="bg-zinc-700/50 rounded-lg overflow-hidden w-12 h-12 flex items-center justify-center group-hover:bg-zinc-900 transition-colors">
                   <span className="material-symbols-rounded text-sky-400">view_list</span>
-                  <span className="text-2xl">{project.mainFeatures}</span>
+                </figure>
+                <div>
+                  <h3 className="text-left font-semibold text-2xl">{project.mainFeatures}</h3>
+                  <p className="text-zinc-400 text-sm">Fitur Utama</p>
                 </div>
-                <div className="text-zinc-400 text-sm">Fitur Utama</div>
               </div>
             </div>
 
@@ -136,8 +138,8 @@ function ProjectDetail() {
               <h2 className="headline-2 mb-6">Technologies Used</h2>
               <div className="flex flex-wrap gap-3">
                 {project.technologies.map((tech, index) => (
-                  <div key={index} className="px-4 py-2 rounded-lg bg-zinc-800 text-zinc-300 ring-1 ring-inset ring-zinc-50/5">
-                    <span className="material-symbols-rounded text-sm mr-2 align-middle">code</span>
+                  <div key={index} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-zinc-300 ring-1 ring-inset ring-zinc-50/5">
+                    <span className="material-symbols-rounded text-sky-400 flex-shrink-0">code</span>
                     <span>{tech}</span>
                   </div>
                 ))}
@@ -153,8 +155,8 @@ function ProjectDetail() {
 
         {/* Key Features */}
         <div className="mt-12 p-6 rounded-2xl bg-zinc-800/50 ring-1 ring-inset ring-zinc-50/5">
-          <h2 className="flex items-center gap-2 headline-2 mb-6">
-            <span className="material-symbols-rounded text-yellow-400">star</span>
+          <h2 className="flex items-center gap-3 headline-2 mb-6">
+            <span className="material-symbols-rounded text-yellow-400 text-[24px] flex-shrink-0">star</span>
             Key Features
           </h2>
 
