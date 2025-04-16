@@ -31,6 +31,12 @@ const projectsData = {
   },
 };
 
+const Spinner = () => (
+  <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="h-12 w-12 border-4 border-zinc-300 border-t-sky-400 rounded-full animate-spin mb-4"></div>
+  </div>
+);
+
 function ProjectDetail() {
   const { slug } = useParams();
   const [project, setProject] = useState(null);
@@ -47,11 +53,7 @@ function ProjectDetail() {
   }, [slug]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-lg">Loading project details...</div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!project) {
