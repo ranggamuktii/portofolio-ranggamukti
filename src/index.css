@@ -122,3 +122,202 @@ body {
 .text-field::placeholder{
   @apply text-zinc-400
 }
+
+
+/* =========================
+   THEME TOGGLER + LIGHT MODE
+   ========================= */
+
+/* Transisi halus antar warna */
+body, .navbar, .nav-link, .btn, .text-field, .img-box, .label {
+  @apply transition-colors duration-300;
+}
+
+/* Light mode overrides (default = Dark) */
+html[data-theme='light'] body { @apply bg-zinc-100 text-zinc-900; }
+html[data-theme='light'] .img-box { @apply bg-zinc-200; }
+
+/* Navbar (Light) */
+html[data-theme='light'] .navbar { @apply bg-white/70 ring-zinc-200; }
+html[data-theme='light'] .nav-link { @apply text-zinc-900/60 hover:text-zinc-900; }
+html[data-theme='light'] .nav-link.active { @apply text-zinc-50; }
+html[data-theme='light'] .navbar .active-box { @apply bg-zinc-900; }
+
+/* Tombol toggle (base) */
+.theme-toggle { 
+  @apply max-w-max h-11 w-11 flex items-center justify-center rounded-xl 
+         border border-zinc-700/50 bg-zinc-800 text-zinc-50 shadow-md 
+         ring-1 ring-inset ring-zinc-50/10;
+}
+html[data-theme='light'] .theme-toggle { 
+  @apply bg-white text-zinc-900 border-zinc-200 ring-zinc-900/5; 
+}
+
+/* Tombol lain (Light) */
+html[data-theme='light'] .btn { @apply ring-zinc-900/5; }
+html[data-theme='light'] .btn-primary { @apply bg-sky-500 text-white hover:bg-sky-400 active:bg-sky-500; }
+html[data-theme='light'] .btn-outline { @apply bg-zinc-50 hover:bg-white active:bg-zinc-50 text-zinc-900 ring-zinc-200; }
+
+/* Form (Light) */
+html[data-theme='light'] .label { @apply text-zinc-600; }
+html[data-theme='light'] .text-field { @apply bg-white hover:ring-zinc-200 focus:ring-sky-500; }
+html[data-theme='light'] .text-field::placeholder { @apply text-zinc-500; }
+
+/* ====== Enhanced look untuk tombol toggle (ikon & glow) ====== */
+/* Glow lembut di belakang ikon */
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background:
+    radial-gradient(60% 60% at 30% 30%, rgba(56,189,248,0.25), transparent 60%),
+    radial-gradient(40% 40% at 70% 70%, rgba(59,130,246,0.20), transparent 60%);
+  opacity: .22;
+  transform: scale(1) rotate(0deg);
+  transition: opacity .3s ease, transform .6s ease;
+  pointer-events: none;
+}
+
+.theme-toggle:hover::before {
+  opacity: .35;
+  transform: scale(1.05) rotate(8deg);
+}
+
+/* Sedikit beda nuansa saat Light */
+html[data-theme='light'] .theme-toggle::before {
+  opacity: .35;
+}
+
+/* Smooth transform untuk SVG ikon di dalam tombol */
+.theme-toggle svg { transition: transform .5s ease; }
+
+/* =========================
+   PENYESUAIAN WARNA ELEMEN
+   (Headline, Muted Text, Link)
+   ========================= */
+
+/* Headline gradient menyesuaikan tema */
+html[data-theme='light'] .headline-1,
+html[data-theme='light'] .headline-2 {
+  background: -webkit-linear-gradient(0deg, #0a0a0a, #3f3f46); /* zinc-950 → zinc-600 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Title: pastikan kontras di Light */
+html[data-theme='light'] .title-1 { @apply text-zinc-900; }
+
+/* Remap “muted text” supaya tidak terlalu pucat di Light */
+html[data-theme='light'] .text-zinc-400 { @apply text-zinc-500; }
+
+/* Link default (bukan .btn/.nav-link): gunakan accent Sky di Light */
+html[data-theme='light'] a:not(.btn):not(.nav-link) { @apply text-sky-600 hover:text-sky-700; }
+
+/* Transition untuk headline saat switch tema */
+.headline-1,
+.headline-2 {
+  transition: -webkit-text-fill-color .3s ease, color .3s ease, background .3s ease;
+}
+
+/* =========================
+   HEADER override (markup tetap)
+   ========================= */
+html[data-theme='light'] header.bg-gradient-to-b {
+  @apply from-white/90 to-white/0;
+}
+
+/* =========================
+   About section overrides (markup tetap)
+   ========================= */
+html[data-theme='light'] #about [class~="bg-zinc-800/50"] {
+  @apply bg-white ring-1 ring-zinc-200;
+}
+html[data-theme='light'] #about .text-zinc-300 { @apply text-zinc-700; }
+html[data-theme='light'] #about .text-zinc-400 { @apply text-zinc-500; }
+html[data-theme='light'] #about .text-sky-400 { @apply text-sky-500; }
+
+#about [class~="bg-zinc-800/50"],
+#about .text-zinc-300,
+#about .text-sky-400,
+#about .text-zinc-400 {
+  @apply transition-colors duration-300;
+}
+
+/* =========================
+   SkillCard — Light Mode + Hover (markup tetap)
+   ========================= */
+
+/* Surface & ring default di Light */
+html[data-theme='light'] .group[class*="ring-2"][class*="ring-inset"][class*="ring-zinc-50/10"] {
+  @apply bg-white ring-zinc-900/5 transition-colors;
+}
+
+/* Hover: surface terang + ring sedikit lebih kuat */
+html[data-theme='light'] .group[class*="ring-2"][class*="ring-inset"][class*="ring-zinc-50/10"]:hover {
+  @apply bg-zinc-50 ring-zinc-300;
+}
+
+/* Ikon <figure>: base putih + hover beda warna */
+html[data-theme='light'] .group figure {
+  @apply bg-white ring-1 ring-zinc-200 transition-colors;
+}
+html[data-theme='light'] .group:hover figure {
+  @apply bg-zinc-50 ring-zinc-300;
+}
+
+/* Netralisir util group-hover gelap dari mode Dark untuk figure */
+html[data-theme='light'] .group:hover .group-hover\:bg-zinc-900,
+html[data-theme='light'] .group:hover .group-hover\:bg-zinc-800,
+html[data-theme='light'] .group:hover .group-hover\:bg-zinc-700 {
+  @apply bg-zinc-50;
+}
+
+/* Deskripsi muted & state hover */
+html[data-theme='light'] .group .text-zinc-400 { @apply text-zinc-500; }
+html[data-theme='light'] .group:hover .text-zinc-400 { @apply text-zinc-600; }
+
+/* Judul kartu lebih kontras saat hover di Light */
+html[data-theme='light'] .group:hover h3 { @apply text-zinc-950; }
+
+/* =========================
+   Generic Hover Remap (untuk util gelap di Light)
+   ========================= */
+html[data-theme='light'] [class*="hover:bg-zinc-700"]:hover,
+html[data-theme='light'] [class*="hover:bg-zinc-800"]:hover,
+html[data-theme='light'] [class*="hover:bg-zinc-900"]:hover {
+  @apply bg-zinc-50;
+}
+
+/* Perbaiki typo util agar transisi tetap aktif bila JSX pakai `transitions-colors` */
+.transitions-colors { @apply transition-colors; }
+
+
+/* =========================
+   ReviewCard — Light Mode (tanpa ubah JSX)
+   ========================= */
+
+/* Card surface: dari bg-zinc-800 -> putih + ring halus */
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 {
+  @apply bg-white ring-1 ring-zinc-200 shadow-sm transition-colors;
+}
+
+/* Hover: bedakan warna + ring sedikit lebih kuat */
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800:hover {
+  @apply bg-zinc-50 ring-zinc-300;
+}
+
+/* Teks muted di dalam card (paragraf & company) */
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 .text-zinc-400 {
+  @apply text-zinc-600;
+}
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 .text-xs.text-zinc-400 {
+  @apply text-zinc-500;
+}
+
+/* Figure avatar: base putih + ring; hover beda warna */
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 figure.img-box {
+  @apply bg-white ring-1 ring-zinc-200 transition-colors;
+}
+html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800:hover figure.img-box {
+  @apply bg-zinc-50 ring-zinc-300;
+}
