@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { trackPageView } from './services/api';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -12,17 +13,21 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import Skill from './components/Skill';
+import Experience from './components/Experience';
 import Work from './components/Work';
-import Review from './components/Review';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ProjectDetail from './components/ProjectDetail';
+import QuickContact from './components/QuickContact';
+import AdminPage from './pages/AdminPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Track analytics
+    trackPageView(pathname).catch(console.error);
   }, [pathname]);
 
   return null;
@@ -42,7 +47,7 @@ function HomePage() {
         y: 0,
         opacity: 1,
         duration: 1,
-        ease: 'power2.out',
+        ease: 'power2.inOut',
       });
     });
   });
@@ -54,8 +59,8 @@ function HomePage() {
         <Hero />
         <About />
         <Skill />
+        <Experience />
         <Work />
-        <Review />
         <Contact />
       </main>
       <Footer />
@@ -71,7 +76,9 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/project/:slug" element={<ProjectDetail />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
+        <QuickContact />
       </ReactLenis>
     </BrowserRouter>
   );

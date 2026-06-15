@@ -1,59 +1,81 @@
+import { useState, useEffect, useRef } from 'react';
 import SkillCard from './SkillCard';
+import SkillSphere from './SkillSphere';
+import { getSkills } from '../services/api';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const skillItem = [
-  {
-    imgSrc: '/figma.svg',
-    label: 'Figma',
-    desc: 'Design tool',
-  },
-  {
-    imgSrc: '/css3.svg',
-    label: 'CSS',
-    desc: 'User Interface',
-  },
-  {
-    imgSrc: '/javascript.svg',
-    label: 'JavaScript',
-    desc: 'Interaction',
-  },
-  {
-    imgSrc: '/nodejs.svg',
-    label: 'NodeJS',
-    desc: 'Web Server',
-  },
-  {
-    imgSrc: '/expressjs.svg',
-    label: 'ExpressJS',
-    desc: 'Node Framework',
-  },
-  {
-    imgSrc: '/mongodb.svg',
-    label: 'MongoDB',
-    desc: 'Database',
-  },
-  {
-    imgSrc: '/react.svg',
-    label: 'React',
-    desc: 'Framework',
-  },
-  {
-    imgSrc: '/tailwindcss.svg',
-    label: 'TailwindCSS',
-    desc: 'User Interface',
-  },
-];
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 function Skill() {
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    if (!loading && skills.length > 0) {
+      const elements = gsap.utils.toArray('.reveal-up', containerRef.current);
+      elements.forEach((element) => {
+        gsap.to(element, {
+          scrollTrigger: {
+            trigger: element,
+            start: '-200 bottom',
+            end: 'bottom 80%',
+            scrub: true,
+          },
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.inOut',
+        });
+      });
+      ScrollTrigger.refresh();
+    }
+  }, { dependencies: [loading, skills], scope: containerRef });
+
+  useEffect(() => {
+    getSkills()
+      .then(data => { setSkills(data); setLoading(false); })
+      .catch(err => { console.error(err); setLoading(false); });
+  }, []);
+
+  // Deduplicate skills by label for both the sphere and the grid
+  const uniqueSkills = skills.filter((skill, index, self) =>
+    index === self.findIndex((s) => s.label === skill.label)
+  );
+
   return (
     <section className="section">
       <div className="container text-left">
         <h2 className="headline-2 reveal-up">Essential Tools I use</h2>
         <p className="text-zinc-400 mt-3 mb-8 max-w-[50ch] reveal-up">Discover the powerful tools and technologies I use to create exceptional, high-performing websites & applications.</p>
-        <div className="grid gap-3 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
-          {skillItem.map(({ imgSrc, label, desc }, key) => (
-            <SkillCard key={key} imgSrc={imgSrc} label={label} desc={desc} classes="reveal-up" />
-          ))}
-        </div>
+        
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <div className="w-8 h-8 border-2 border-zinc-700 border-t-sky-500 rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+            {/* Left: 3D Skill Sphere */}
+            <div className="skill-sphere-section reveal-up">
+              <div className="skill-sphere-container">
+                <SkillSphere skills={uniqueSkills} />
+              </div>
+              <p className="skill-sphere-hint">
+                <span className="material-symbols-rounded text-sm align-middle mr-1">touch_app</span>
+                Drag to rotate the sphere
+              </p>
+            </div>
+
+            {/* Right: Skill cards list */}
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {uniqueSkills.map(({ id, img_src, label, description }) => (
+                <SkillCard key={id} imgSrc={img_src || '/figma.svg'} label={label} desc={description || 'Development Tool'} classes="reveal-up" />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

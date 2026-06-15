@@ -1,6 +1,9 @@
+import { useState } from 'react';
+import { sendMessage } from '../services/api';
+
 const socialLinks = [
   {
-    href: 'https://www.github.com/codewithsadee-org',
+    href: 'https://github.com/ranggamuktii',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -12,7 +15,7 @@ const socialLinks = [
     alt: 'GitHub',
   },
   {
-    href: 'https://www.linkedin.com/in/codewithsadee',
+    href: 'https://linkedin.com/in/ranggamuktii',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -24,19 +27,7 @@ const socialLinks = [
     alt: 'LinkedIn',
   },
   {
-    href: 'https://x.com/codewithsadee_',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M6.25 3C4.46403 3 3 4.46403 3 6.25V17.75C3 19.536 4.46403 21 6.25 21H17.75C19.536 21 21 19.536 21 17.75V6.25C21 4.46403 19.536 3 17.75 3H6.25ZM6.25 4.5H17.75C18.725 4.5 19.5 5.27497 19.5 6.25V17.75C19.5 18.725 18.725 19.5 17.75 19.5H6.25C5.27497 19.5 4.5 18.725 4.5 17.75V6.25C4.5 5.27497 5.27497 4.5 6.25 4.5ZM6.91406 7L10.7822 12.5283L6.91113 17H7.93262L11.2344 13.1758L13.9102 17H17.1289L13.0127 11.1172L16.5684 7H15.5684L12.5615 10.4717L10.1328 7H6.91406ZM8.46777 7.84766H9.74902L15.5752 16.1523H14.2939L8.46777 7.84766Z"
-          fill="currentColor"
-        />
-      </svg>
-    ),
-    alt: 'Twitter X',
-  },
-  {
-    href: 'https://www.instagram.com/codewithsadee',
+    href: 'https://instagram.com/ranggamuktii',
     icon: (
       <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -49,7 +40,38 @@ const socialLinks = [
   },
 ];
 
+
+
 const Contact = () => {
+  const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    setErrorMsg('');
+
+    const formData = new FormData(e.target);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      company: '' // Placeholder if you decide to add a company field to the UI later
+    };
+
+    try {
+      await sendMessage(data);
+      setStatus('success');
+      e.target.reset();
+      setTimeout(() => setStatus('idle'), 5000);
+    } catch (err) {
+      console.error('Contact form error:', err);
+      setErrorMsg(err.response?.data?.error || 'Failed to send message. Please try emailing me directly.');
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
+
   return (
     <section id="contact" className="section">
       <div className="container lg:grid lg:grid-cols-2 lg:items-stretch">
@@ -69,19 +91,38 @@ const Contact = () => {
             ))}
           </div>
         </div>
-        <form action="https://getform.io/f/bdrnwgmb" method="POST" className="text-left xl:pl-10 2xl:pl-20">
-          <div className=" md:grid md:items-center md:grid-cols-2 md:gap-2">
+
+        <form onSubmit={handleSubmit} className="text-left xl:pl-10 2xl:pl-20">
+          <div className="md:grid md:items-center md:grid-cols-2 md:gap-2">
             <div className="mb-4">
               <label htmlFor="name" className="label reveal-up">
                 Name
               </label>
-              <input type="text" name="name" id="name" autoComplete="name" required placeholder="Rangga Mukti" className="text-field reveal-up" />
+              <input
+                type="text"
+                name="name"
+                id="name"
+                autoComplete="name"
+                required
+                placeholder="Your name"
+                className="text-field reveal-up"
+                disabled={status === 'sending'}
+              />
             </div>
             <div className="mb-4">
               <label htmlFor="email" className="label reveal-up">
                 Email
               </label>
-              <input type="text" name="email" id="email" autoComplete="email" required placeholder="daniswara.ranggamukti@gmail.com" className="text-field reveal-up" />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autoComplete="email"
+                required
+                placeholder="you@example.com"
+                className="text-field reveal-up"
+                disabled={status === 'sending'}
+              />
             </div>
           </div>
 
@@ -89,11 +130,50 @@ const Contact = () => {
             <label htmlFor="message" className="label reveal-up">
               Message
             </label>
-            <textarea name="message" id="message" placeholder="Hi!" required className="text-field resize-y min-h-32 max-h-80 reveal-up"></textarea>
+            <textarea
+              name="message"
+              id="message"
+              placeholder="Tell me about your project..."
+              required
+              className="text-field resize-y min-h-32 max-h-80 reveal-up"
+              disabled={status === 'sending'}
+            ></textarea>
           </div>
-          <button type="submit" className="btn btn-primary [&]:max-w-full w-full justify-center reveal-up">
-            Submit
+
+          {/* Submit button with states */}
+          <button
+            type="submit"
+            disabled={status === 'sending'}
+            className="btn btn-primary [&]:max-w-full w-full justify-center reveal-up disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {status === 'sending' ? (
+              <>
+                <span className="inline-block w-4 h-4 border-2 border-zinc-950/30 border-t-zinc-950 rounded-full animate-spin"></span>
+                Sending...
+              </>
+            ) : (
+              <>
+                Send Message
+                <span className="material-symbols-rounded" aria-hidden="true">send</span>
+              </>
+            )}
           </button>
+
+          {/* Success message */}
+          {status === 'success' && (
+            <div className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2 animate-fadeIn">
+              <span className="material-symbols-rounded text-emerald-400">check_circle</span>
+              <p className="text-sm text-emerald-400">Message sent successfully! I&apos;ll get back to you soon.</p>
+            </div>
+          )}
+
+          {/* Error message */}
+          {status === 'error' && (
+            <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-2 animate-fadeIn">
+              <span className="material-symbols-rounded text-red-400">error</span>
+              <p className="text-sm text-red-400">{errorMsg}</p>
+            </div>
+          )}
         </form>
       </div>
     </section>

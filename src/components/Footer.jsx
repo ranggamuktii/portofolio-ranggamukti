@@ -10,12 +10,12 @@ const sitemap = [
     href: '#about',
   },
   {
-    label: 'Work',
-    href: '#work',
+    label: 'Experience',
+    href: '#experience',
   },
   {
-    label: 'Reviews',
-    href: '#reviews',
+    label: 'Work',
+    href: '#work',
   },
   {
     label: 'Contact me',
@@ -26,23 +26,15 @@ const sitemap = [
 const socials = [
   {
     label: 'GitHub',
-    href: 'https://www.github.com/codewithsadee-org',
+    href: 'https://github.com/ranggamuktii',
   },
   {
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/codewithsadee',
-  },
-  {
-    label: 'Twitter X',
-    href: 'https://x.com/codewithsadee_',
+    href: 'https://linkedin.com/in/ranggamuktii',
   },
   {
     label: 'Instagram',
-    href: 'https://www.instagram.com/codewithsadee',
-  },
-  {
-    label: 'CodePen',
-    href: 'https://codepen.io/codewithsadee',
+    href: 'https://instagram.com/ranggamuktii',
   },
 ];
 
@@ -89,7 +81,7 @@ function Footer() {
             <img src="/logo.svg" width={40} height={40} alt="Logo" />
           </a>
           <p className="text-zinc-500 text-sm reveal-up">
-            @copy; 2025 <span className="text-zinc-200 reveal-up">ranggamukti</span>
+            © 2025 <span className="text-zinc-200">ranggamukti</span>
           </p>
         </div>
       </div>

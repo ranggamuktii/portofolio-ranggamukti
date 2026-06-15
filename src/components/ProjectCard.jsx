@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function ProjectCard({ imgSrc, title, tags, projectLink, slug, classes }) {
   return (
-    <div className={'relative p-4 rounded-2xl bg-zinc-800 hover:bg-zinc-700/50 active:bg-zinc-700/60 ring-1 ring-inset ring-zinc-50/5 transition-colors' + classes}>
+    <div className={'relative p-4 rounded-2xl bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 active:bg-zinc-200 dark:active:bg-zinc-700/60 ring-1 ring-inset ring-zinc-900/5 dark:ring-zinc-50/5 transition-colors shadow-sm dark:shadow-none ' + classes}>
       <figure className="img-box aspect-square rounded-lg mb-4">
         <img src={imgSrc} alt={title} loading="lazy" className="img-cover" />
       </figure>
@@ -11,7 +11,7 @@ function ProjectCard({ imgSrc, title, tags, projectLink, slug, classes }) {
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-3">
             {tags.map((label, key) => (
-              <span key={key} className="h-8 text-xs text-zinc-400 bg-zinc-50/5 grid items-center px-3 rounded-lg">
+              <span key={key} className="h-8 text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-50/5 grid items-center px-3 rounded-lg">
                 {label}
               </span>
             ))}
@@ -26,7 +26,7 @@ function ProjectCard({ imgSrc, title, tags, projectLink, slug, classes }) {
                 </span>
               </a>
             ) : (
-              <button className="btn bg-zinc-700 text-zinc-400 cursor-not-allowed" disabled>
+              <button className="btn bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 cursor-not-allowed" disabled>
                 Demo Not Available
               </button>
             )}
