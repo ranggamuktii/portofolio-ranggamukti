@@ -8,8 +8,12 @@ html {
 }
 
 body {
-  @apply bg-zinc-900 text-zinc-50;
+  @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-50;
 }
+
+/* =========================
+   TYPOGRAPHY
+   ========================= */
 
 .headline-1, .headline-2 {
   @apply max-w-max;
@@ -23,301 +27,562 @@ body {
 }
 
 .headline-2 {
-  @apply text-3xl lg:text-4xl lg:leading-tight font-semibold
+  @apply text-3xl lg:text-4xl lg:leading-tight font-semibold;
 }
 
-.title-1{
-  @apply text-[22px] font-normal
-  
+.title-1 {
+  @apply text-[22px] font-normal;
 }
+
+/* =========================
+   ICON FONT
+   ========================= */
 
 .material-symbols-rounded {
-  @apply w-[1em] h-[1em] overflow-hidden;
-  font-variation-setting: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  @apply inline-flex items-center justify-center shrink-0 leading-none;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
-.container{
+/* =========================
+   LAYOUT PRIMITIVES
+   ========================= */
+
+.container {
   @apply px-4 mx-auto lg:px-8 xl:max-w-6xl;
 }
 
-.img-box{
+.img-box {
   @apply bg-zinc-700 overflow-hidden;
 }
 
-.img-cover{
+.img-cover {
   @apply w-full h-full object-cover;
 }
 
-.section{
-  @apply pt-20 lg:pt-32
+.section {
+  @apply pt-20 lg:pt-32;
 }
 
-.reveal-up{
-  @apply translate-y-20 opacity-0
+.reveal-up {
+  @apply translate-y-20 opacity-0;
 }
 
-/* .menu-btn {
-  @apply w-10 h-10 grid place-items-center bg-zinc-50/10 rounded-xl ring-inset ring-1 ring-zinc-50/[0.02] backdrop-blur-2xl transition-colors hover:bg-zinc-50/15 transition-[transform,background-color] active:scale-95;
-} */
+/* =========================
+   NAVBAR
+   ========================= */
 
 .menu-btn {
-  @apply hidden;
+  @apply w-10 h-10 grid place-items-center bg-zinc-50/10 rounded-xl
+         ring-inset ring-1 ring-zinc-50/5 backdrop-blur-2xl
+         transition-[transform,background-color] hover:bg-zinc-50/15 active:scale-95;
 }
 
 .navbar {
-  @apply flex justify-center p-1 sm:p-2 bg-zinc-50/10 rounded-xl sm:rounded-2xl ring-inset ring-1 ring-zinc-50/5 backdrop-blur-2xl;
-  @apply static opacity-100 blur-0 visible scale-100;
-  @apply w-auto max-w-[95%] mx-auto;
+  @apply absolute top-full mt-2 right-4 p-2
+         bg-zinc-900/90 rounded-2xl ring-inset ring-1 ring-zinc-50/10 backdrop-blur-2xl
+         scale-90 opacity-0 invisible
+         transition-all duration-300 ease-in-out
+         w-max max-w-[calc(100vw-2rem)];
+  /* Desktop overrides */
+  @apply md:relative md:top-0 md:mt-0 md:right-0
+         md:opacity-100 md:visible md:scale-100
+         md:bg-zinc-800/60 md:flex md:items-center md:gap-0 md:p-1 md:rounded-xl;
 }
 
-
 .navbar.active {
-  @apply opacity-100 scale-100 blur-0 visible;
+  @apply opacity-100 scale-100 visible;
 }
 
 .nav-link {
-  @apply grid items-center h-8 sm:h-9 px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium tracking-wide text-zinc-50/50 hover:text-zinc-50 transition-colors;
+  @apply grid items-center h-9 px-3 md:px-4
+         text-sm font-medium tracking-wide
+         text-zinc-400 hover:text-zinc-100
+         transition-colors duration-200
+         rounded-lg hover:bg-zinc-700/50
+         md:h-8 md:text-sm md:rounded-lg;
 }
 
-.nav-link.active {
-  @apply text-zinc-900 duration-500;
-}
-
-.navbar .active-box {
-  @apply absolute bg-zinc-50 rounded-lg -z-10 transition-[top,left] duration-500;
-}
+/* =========================
+   BUTTONS
+   ========================= */
 
 .btn {
-  @apply max-w-max h-9 flex items-center gap-2 px-4 rounded-xl font-medium text-sm ring-1 ring-zinc-50/5 ring-inset transition-[background-color]
+  @apply max-w-max h-9 flex items-center gap-2 px-4
+         rounded-xl font-medium text-sm
+         ring-1 ring-zinc-50/5 ring-inset
+         transition-[background-color,transform] active:scale-[0.97];
 }
 
 .btn-secondary {
-  @apply bg-zinc-50 text-zinc-900 active:bg-zinc-50/80
+  @apply bg-zinc-50 text-zinc-900 active:bg-zinc-50/80;
 }
 
 .btn .material-symbols-rounded {
-  @apply text-[18px]
+  @apply text-[18px];
 }
 
-.btn:has( .material-symbols-rounded){
-  @apply pr-3
+.btn:has(.material-symbols-rounded) {
+  @apply pr-3;
 }
 
-.btn-primary{
-  @apply h-11 bg-sky-400 text-zinc-950 hover:bg-sky-300 active:bg-sky-400
+.btn-primary {
+  @apply h-11 bg-sky-400 text-zinc-950 hover:bg-sky-300 active:bg-sky-400;
 }
 
 .btn-outline {
-  @apply h-11 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-800
+  @apply h-11 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-800;
 }
 
+/* =========================
+   FORMS
+   ========================= */
+
 .label {
-  @apply block text-zinc-200 text-sm font-normal mb-2
+  @apply block text-zinc-200 text-sm font-normal mb-2;
 }
 
 .text-field {
-  @apply block outline-none w-full px-3 py-3 text-sm bg-zinc-800 rounded-xl ring-1 ring-inset ring-transparent transition-shadow hover:ring-zinc-50/5 focus:ring-2 focus:ring-sky-400;
+  @apply block outline-none w-full px-3 py-3 text-sm
+         bg-zinc-800 rounded-xl
+         ring-1 ring-inset ring-transparent
+         transition-shadow hover:ring-zinc-50/5 focus:ring-2 focus:ring-sky-400;
 }
 
-.text-field::placeholder{
-  @apply text-zinc-400
+.text-field::placeholder {
+  @apply text-zinc-400;
 }
-
 
 /* =========================
-   THEME TOGGLER + LIGHT MODE
+   HERO ANIMATIONS
    ========================= */
 
-/* Transisi halus antar warna */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+/* =========================
+   CODE EDITOR CARD
+   ========================= */
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+@keyframes scanline-sweep {
+  0%   { top: -2px; opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.code-editor-card {
+  position: relative;
+}
+
+/* Holographic scan line */
+.code-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), rgba(129, 140, 248, 0.3), transparent);
+  z-index: 20;
+  pointer-events: none;
+  animation: scanline-sweep 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Blinking cursor */
+.code-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #38bdf8;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink-cursor 1s step-end infinite;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+}
+
+/* Code line hover effect */
+.code-line-hover {
+  @apply rounded px-1 -mx-1 transition-all duration-200;
+}
+
+.code-line-hover:hover {
+  @apply bg-zinc-800/60;
+  box-shadow: inset 3px 0 0 rgba(56, 189, 248, 0.5);
+}
+
+/* Light mode */
+html[data-theme='light'] .code-editor-card {
+  @apply !bg-white !border-zinc-200 shadow-xl shadow-zinc-200/50;
+}
+html[data-theme='light'] .code-editor-card .border-b,
+html[data-theme='light'] .code-editor-card .border-t {
+  @apply !border-zinc-200;
+}
+html[data-theme='light'] .code-editor-card .border-r {
+  @apply !border-zinc-200;
+}
+html[data-theme='light'] .code-scanline {
+  background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.25), rgba(99, 102, 241, 0.2), transparent);
+}
+html[data-theme='light'] .code-line-hover:hover {
+  @apply bg-sky-50/80;
+  box-shadow: inset 3px 0 0 rgba(14, 165, 233, 0.5);
+}
+
+/* =========================
+   HERO ORBITAL SYSTEM
+   ========================= */
+
+@keyframes orbital-spin {
+  from { transform: rotateZ(0deg); }
+  to   { transform: rotateZ(360deg); }
+}
+
+@keyframes orbital-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translate(0, 0) scale(1);   opacity: 0.6; }
+  25%      { transform: translate(4px, -8px) scale(1.2); opacity: 1; }
+  50%      { transform: translate(-2px, -14px) scale(0.9); opacity: 0.4; }
+  75%      { transform: translate(-6px, -4px) scale(1.1); opacity: 0.8; }
+}
+
+@keyframes dot-glow {
+  0%, 100% { box-shadow: 0 0 4px 1px rgba(56, 189, 248, 0.6); }
+  50%      { box-shadow: 0 0 10px 3px rgba(56, 189, 248, 1); }
+}
+
+/* Container */
+.hero-orbital {
+  position: relative;
+  width: 420px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+/* Ambient glow behind everything */
+.hero-orbital__glow {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.06) 40%, transparent 70%);
+  animation: orbital-pulse 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* Photo */
+.hero-orbital__photo {
+  position: relative;
+  z-index: 10;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(to top, rgba(56, 189, 248, 0.3), transparent);
+  box-shadow:
+    0 0 40px rgba(56, 189, 248, 0.15),
+    0 0 80px rgba(56, 189, 248, 0.05);
+}
+
+.hero-orbital__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Orbital rings — shared */
+.hero-orbital__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  z-index: 5;
+}
+
+/* Ring 1: large, slow, slight tilt */
+.hero-orbital__ring--1 {
+  inset: -10px;
+  border-color: rgba(56, 189, 248, 0.18);
+  transform: rotateX(65deg) rotateY(10deg);
+  animation: orbital-spin 12s linear infinite;
+}
+
+/* Ring 2: medium, medium speed, different tilt */
+.hero-orbital__ring--2 {
+  inset: 15px;
+  border-color: rgba(129, 140, 248, 0.15);
+  transform: rotateX(72deg) rotateY(-20deg);
+  animation: orbital-spin 18s linear infinite reverse;
+}
+
+/* Ring 3: tight, fast-ish, steep tilt */
+.hero-orbital__ring--3 {
+  inset: 40px;
+  border-color: rgba(56, 189, 248, 0.12);
+  transform: rotateX(58deg) rotateY(30deg);
+  animation: orbital-spin 10s linear infinite;
+}
+
+/* Orbiting dots on rings */
+.hero-orbital__dot {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  animation: dot-glow 2s ease-in-out infinite;
+}
+
+.hero-orbital__ring--2 .hero-orbital__dot {
+  background: #818cf8;
+  top: auto;
+  bottom: -3px;
+  left: 30%;
+  animation-delay: 0.6s;
+}
+
+.hero-orbital__ring--3 .hero-orbital__dot {
+  top: 50%;
+  left: -3px;
+  animation-delay: 1.2s;
+}
+
+/* Floating particles */
+.hero-particle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  animation: particle-float 6s ease-in-out infinite;
+}
+
+.hero-particle--1 {
+  width: 5px; height: 5px;
+  background: #38bdf8;
+  top: 8%; left: 15%;
+  animation-duration: 5s;
+}
+.hero-particle--2 {
+  width: 3px; height: 3px;
+  background: #818cf8;
+  top: 15%; right: 10%;
+  animation-duration: 7s;
+  animation-delay: 0.5s;
+}
+.hero-particle--3 {
+  width: 4px; height: 4px;
+  background: #38bdf8;
+  bottom: 20%; left: 8%;
+  animation-duration: 6s;
+  animation-delay: 1s;
+}
+.hero-particle--4 {
+  width: 3px; height: 3px;
+  background: #a78bfa;
+  bottom: 10%; right: 18%;
+  animation-duration: 8s;
+  animation-delay: 1.5s;
+}
+.hero-particle--5 {
+  width: 6px; height: 6px;
+  background: #38bdf8;
+  top: 40%; left: 2%;
+  animation-duration: 5.5s;
+  animation-delay: 2s;
+  opacity: 0.5;
+}
+.hero-particle--6 {
+  width: 3px; height: 3px;
+  background: #818cf8;
+  top: 30%; right: 5%;
+  animation-duration: 7.5s;
+  animation-delay: 0.8s;
+}
+.hero-particle--7 {
+  width: 4px; height: 4px;
+  background: #22d3ee;
+  bottom: 35%; right: 3%;
+  animation-duration: 6.5s;
+  animation-delay: 2.5s;
+}
+.hero-particle--8 {
+  width: 2px; height: 2px;
+  background: #a78bfa;
+  top: 5%; left: 45%;
+  animation-duration: 9s;
+  animation-delay: 3s;
+}
+
+/* Light mode override */
+html[data-theme='light'] .hero-orbital__glow {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(99, 102, 241, 0.04) 40%, transparent 70%);
+}
+html[data-theme='light'] .hero-orbital__photo {
+  box-shadow:
+    0 0 40px rgba(14, 165, 233, 0.1),
+    0 0 80px rgba(14, 165, 233, 0.03);
+}
+html[data-theme='light'] .hero-orbital__ring--1 { border-color: rgba(14, 165, 233, 0.2); }
+html[data-theme='light'] .hero-orbital__ring--2 { border-color: rgba(99, 102, 241, 0.18); }
+html[data-theme='light'] .hero-orbital__ring--3 { border-color: rgba(14, 165, 233, 0.15); }
+
+/* =========================
+   3D SKILL SPHERE
+   ========================= */
+
+.skill-sphere-section {
+  @apply flex flex-col items-center;
+}
+
+.skill-sphere-container {
+  @apply relative w-full max-w-[520px] mx-auto;
+}
+
+/* Subtle radial glow behind the sphere */
+.skill-sphere-container::before {
+  content: '';
+  @apply absolute inset-0 rounded-full opacity-30 blur-3xl -z-10;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+}
+
+.skill-sphere-wrapper {
+  @apply w-full aspect-square max-w-[420px] mx-auto;
+}
+
+.skill-sphere-hint {
+  @apply text-zinc-500 text-xs text-center mt-2 select-none;
+}
+
+/* Light mode overrides */
+html[data-theme='light'] .skill-sphere-container::before {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+}
+
+html[data-theme='light'] .skill-sphere-hint {
+  @apply text-zinc-400;
+}
+
+/* =========================
+   GLOBAL TRANSITION LAYER
+   ========================= */
+
 body, .navbar, .nav-link, .btn, .text-field, .img-box, .label {
   @apply transition-colors duration-300;
 }
 
-/* Light mode overrides (default = Dark) */
-html[data-theme='light'] body { @apply bg-zinc-100 text-zinc-900; }
+/* ============================================================
+   LIGHT-MODE OVERRIDES (WCAG 2.0 Compliant Contrast)
+   ============================================================ */
+
+/* --- Base --- */
+html[data-theme='light'] body { @apply bg-zinc-50 text-zinc-900; }
 html[data-theme='light'] .img-box { @apply bg-zinc-200; }
 
-/* Navbar (Light) */
-html[data-theme='light'] .navbar { @apply bg-white/70 ring-zinc-200; }
-html[data-theme='light'] .nav-link { @apply text-zinc-900/60 hover:text-zinc-900; }
-html[data-theme='light'] .nav-link.active { @apply text-zinc-50; }
-html[data-theme='light'] .navbar .active-box { @apply bg-zinc-900; }
+/* --- Global Text Contrast Fixes --- */
+/* Mapping dark mode greys to accessible light mode greys */
+html[data-theme='light'] .text-zinc-500 { @apply !text-zinc-600; }
+html[data-theme='light'] .text-zinc-400 { @apply !text-zinc-600; }
+html[data-theme='light'] .text-zinc-300 { @apply !text-zinc-700; }
+html[data-theme='light'] .text-zinc-200 { @apply !text-zinc-800; }
+html[data-theme='light'] .text-zinc-100 { @apply !text-zinc-900; }
 
-/* Tombol toggle (base) */
-.theme-toggle { 
-  @apply max-w-max h-11 w-11 flex items-center justify-center rounded-xl 
-         border border-zinc-700/50 bg-zinc-800 text-zinc-50 shadow-md 
-         ring-1 ring-inset ring-zinc-50/10;
-}
-html[data-theme='light'] .theme-toggle { 
-  @apply bg-white text-zinc-900 border-zinc-200 ring-zinc-900/5; 
-}
-
-/* Tombol lain (Light) */
-html[data-theme='light'] .btn { @apply ring-zinc-900/5; }
-html[data-theme='light'] .btn-primary { @apply bg-sky-500 text-white hover:bg-sky-400 active:bg-sky-500; }
-html[data-theme='light'] .btn-outline { @apply bg-zinc-50 hover:bg-white active:bg-zinc-50 text-zinc-900 ring-zinc-200; }
-
-/* Form (Light) */
-html[data-theme='light'] .label { @apply text-zinc-600; }
-html[data-theme='light'] .text-field { @apply bg-white hover:ring-zinc-200 focus:ring-sky-500; }
-html[data-theme='light'] .text-field::placeholder { @apply text-zinc-500; }
-
-/* ====== Enhanced look untuk tombol toggle (ikon & glow) ====== */
-/* Glow lembut di belakang ikon */
-.theme-toggle::before {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  background:
-    radial-gradient(60% 60% at 30% 30%, rgba(56,189,248,0.25), transparent 60%),
-    radial-gradient(40% 40% at 70% 70%, rgba(59,130,246,0.20), transparent 60%);
-  opacity: .22;
-  transform: scale(1) rotate(0deg);
-  transition: opacity .3s ease, transform .6s ease;
-  pointer-events: none;
+/* --- Global Background & Border Fixes --- */
+/* Mapping translucent dark backgrounds to crisp light cards */
+html[data-theme='light'] .bg-zinc-800\/50,
+html[data-theme='light'] .bg-zinc-900\/80,
+html[data-theme='light'] .bg-zinc-900\/60,
+html[data-theme='light'] .bg-zinc-900\/50 {
+  @apply !bg-white !border-zinc-200 shadow-sm text-zinc-900;
 }
 
-.theme-toggle:hover::before {
-  opacity: .35;
-  transform: scale(1.05) rotate(8deg);
+html[data-theme='light'] .border-zinc-700\/30,
+html[data-theme='light'] .border-zinc-700\/40,
+html[data-theme='light'] .border-zinc-700\/50 {
+  @apply !border-zinc-200;
 }
 
-/* Sedikit beda nuansa saat Light */
-html[data-theme='light'] .theme-toggle::before {
-  opacity: .35;
+html[data-theme='light'] .ring-zinc-50\/10 {
+  @apply !ring-zinc-200 hover:!bg-zinc-100;
 }
 
-/* Smooth transform untuk SVG ikon di dalam tombol */
-.theme-toggle svg { transition: transform .5s ease; }
+/* --- Navigation & Header --- */
+html[data-theme='light'] header { @apply text-zinc-900; }
+html[data-theme='light'] header.fixed { @apply shadow-zinc-200/50; }
+html[data-theme='light'] .navbar { @apply bg-white/90 ring-zinc-200 md:bg-zinc-50/80; }
+html[data-theme='light'] .nav-link { @apply text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60; }
+html[data-theme='light'] .menu-btn,
+html[data-theme='light'] header button[aria-label="Toggle theme"] {
+  @apply bg-zinc-900/5 ring-zinc-900/10 hover:bg-zinc-900/10 text-zinc-700;
+}
 
-/* =========================
-   PENYESUAIAN WARNA ELEMEN
-   (Headline, Muted Text, Link)
-   ========================= */
+/* --- Buttons --- */
+html[data-theme='light'] .btn { @apply ring-zinc-900/10; }
+html[data-theme='light'] .btn-primary { @apply bg-sky-600 text-white hover:bg-sky-500 active:bg-sky-600 shadow-sky-600/20; }
+html[data-theme='light'] .btn-outline { @apply bg-white hover:bg-zinc-50 text-zinc-900 ring-zinc-300; }
 
-/* Headline gradient menyesuaikan tema */
+/* --- Forms --- */
+html[data-theme='light'] .label { @apply text-zinc-700 font-medium; }
+html[data-theme='light'] .text-field { @apply bg-white border-zinc-300 hover:border-zinc-400 focus:border-sky-500 focus:ring-sky-500 text-zinc-900; }
+html[data-theme='light'] .text-field::placeholder { @apply text-zinc-400; }
+
+/* --- Headlines --- */
 html[data-theme='light'] .headline-1,
 html[data-theme='light'] .headline-2 {
-  background: -webkit-linear-gradient(0deg, #0a0a0a, #3f3f46); /* zinc-950 → zinc-600 */
+  background: -webkit-linear-gradient(0deg, #18181b, #52525b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
-/* Title: pastikan kontras di Light */
 html[data-theme='light'] .title-1 { @apply text-zinc-900; }
 
-/* Remap “muted text” supaya tidak terlalu pucat di Light */
-html[data-theme='light'] .text-zinc-400 { @apply text-zinc-500; }
-
-/* Link default (bukan .btn/.nav-link): gunakan accent Sky di Light */
 html[data-theme='light'] a:not(.btn):not(.nav-link) { @apply text-sky-600 hover:text-sky-700; }
 
-/* Transition untuk headline saat switch tema */
-.headline-1,
-.headline-2 {
-  transition: -webkit-text-fill-color .3s ease, color .3s ease, background .3s ease;
+/* --- Component Specific Mapping --- */
+/* Experience Timeline */
+html[data-theme='light'] #experience .w-\[2px\].bg-zinc-800 { @apply !bg-zinc-200; }
+/* Skill Cards Hover */
+html[data-theme='light'] .group:hover figure { @apply bg-zinc-50 ring-zinc-300; }
+/* Hero Badges */
+html[data-theme='light'] [class*="bg-emerald-400/10"],
+html[data-theme='light'] .bg-emerald-900,
+html[data-theme='light'] .bg-emerald-400\/20 {
+  @apply !bg-emerald-50 !border-emerald-200;
 }
-
-/* =========================
-   HEADER override (markup tetap)
-   ========================= */
-html[data-theme='light'] header.bg-gradient-to-b {
-  @apply from-white/90 to-white/0;
+html[data-theme='light'] .bg-sky-900,
+html[data-theme='light'] .bg-sky-400\/20 {
+  @apply !bg-sky-50 !border-sky-200;
 }
-
-/* =========================
-   About section overrides (markup tetap)
-   ========================= */
-html[data-theme='light'] #about [class~="bg-zinc-800/50"] {
-  @apply bg-white ring-1 ring-zinc-200;
-}
-html[data-theme='light'] #about .text-zinc-300 { @apply text-zinc-700; }
-html[data-theme='light'] #about .text-zinc-400 { @apply text-zinc-500; }
-html[data-theme='light'] #about .text-sky-400 { @apply text-sky-500; }
-
-#about [class~="bg-zinc-800/50"],
-#about .text-zinc-300,
-#about .text-sky-400,
-#about .text-zinc-400 {
-  @apply transition-colors duration-300;
-}
-
-/* =========================
-   SkillCard — Light Mode + Hover (markup tetap)
-   ========================= */
-
-/* Surface & ring default di Light */
-html[data-theme='light'] .group[class*="ring-2"][class*="ring-inset"][class*="ring-zinc-50/10"] {
-  @apply bg-white ring-zinc-900/5 transition-colors;
-}
-
-/* Hover: surface terang + ring sedikit lebih kuat */
-html[data-theme='light'] .group[class*="ring-2"][class*="ring-inset"][class*="ring-zinc-50/10"]:hover {
-  @apply bg-zinc-50 ring-zinc-300;
-}
-
-/* Ikon <figure>: base putih + hover beda warna */
-html[data-theme='light'] .group figure {
-  @apply bg-white ring-1 ring-zinc-200 transition-colors;
-}
-html[data-theme='light'] .group:hover figure {
-  @apply bg-zinc-50 ring-zinc-300;
-}
-
-/* Netralisir util group-hover gelap dari mode Dark untuk figure */
-html[data-theme='light'] .group:hover .group-hover\:bg-zinc-900,
-html[data-theme='light'] .group:hover .group-hover\:bg-zinc-800,
-html[data-theme='light'] .group:hover .group-hover\:bg-zinc-700 {
-  @apply bg-zinc-50;
-}
-
-/* Deskripsi muted & state hover */
-html[data-theme='light'] .group .text-zinc-400 { @apply text-zinc-500; }
-html[data-theme='light'] .group:hover .text-zinc-400 { @apply text-zinc-600; }
-
-/* Judul kartu lebih kontras saat hover di Light */
-html[data-theme='light'] .group:hover h3 { @apply text-zinc-950; }
-
-/* =========================
-   Generic Hover Remap (untuk util gelap di Light)
-   ========================= */
-html[data-theme='light'] [class*="hover:bg-zinc-700"]:hover,
-html[data-theme='light'] [class*="hover:bg-zinc-800"]:hover,
-html[data-theme='light'] [class*="hover:bg-zinc-900"]:hover {
-  @apply bg-zinc-50;
-}
-
-/* Perbaiki typo util agar transisi tetap aktif bila JSX pakai `transitions-colors` */
-.transitions-colors { @apply transition-colors; }
-
-
-/* =========================
-   ReviewCard — Light Mode (tanpa ubah JSX)
-   ========================= */
-
-/* Card surface: dari bg-zinc-800 -> putih + ring halus */
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 {
-  @apply bg-white ring-1 ring-zinc-200 shadow-sm transition-colors;
-}
-
-/* Hover: bedakan warna + ring sedikit lebih kuat */
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800:hover {
-  @apply bg-zinc-50 ring-zinc-300;
-}
-
-/* Teks muted di dalam card (paragraf & company) */
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 .text-zinc-400 {
-  @apply text-zinc-600;
-}
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 .text-xs.text-zinc-400 {
-  @apply text-zinc-500;
-}
-
-/* Figure avatar: base putih + ring; hover beda warna */
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800 figure.img-box {
-  @apply bg-white ring-1 ring-zinc-200 transition-colors;
-}
-html[data-theme='light'] .min-w-\[320px\].rounded-xl.p-5.bg-zinc-800:hover figure.img-box {
-  @apply bg-zinc-50 ring-zinc-300;
-}
+/* Accent Colors */
+html[data-theme='light'] .text-emerald-400 { @apply !text-emerald-600; }
+html[data-theme='light'] .text-sky-400,
+html[data-theme='light'] .text-sky-300 { @apply !text-sky-600; }
+html[data-theme='light'] .text-purple-400 { @apply !text-purple-600; }
+html[data-theme='light'] .text-amber-400 { @apply !text-amber-600; }
