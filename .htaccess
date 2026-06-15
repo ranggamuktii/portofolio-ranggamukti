@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Handle API Requests -> Route to PHP Backend
+  RewriteCond %{REQUEST_URI} ^/api/ [NC]
+  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+  # 2. Handle React Router (SPA) -> Route to index.html
+  # If the request is not for a real file or directory
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # And it's not an API request
+  RewriteCond %{REQUEST_URI} !^/api/ [NC]
+  RewriteRule ^(.*)$ index.html [QSA,L]
+</IfModule>
