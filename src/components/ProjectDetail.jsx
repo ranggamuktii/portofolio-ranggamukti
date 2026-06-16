@@ -117,7 +117,7 @@ function ProjectDetail() {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-zinc-900 to-zinc-500 dark:from-white dark:via-sky-100 dark:to-zinc-500 mb-6 tracking-tight leading-[1.2] drop-shadow-sm transition-colors duration-300">
             {project.title}
           </h1>
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed max-w-2xl mx-auto font-medium transition-colors duration-300">
+          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed max-w-2xl mx-auto font-medium whitespace-pre-line transition-colors duration-300">
             {project.description}
           </p>
           <div className="flex flex-wrap justify-center gap-4">

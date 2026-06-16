@@ -96,7 +96,7 @@ function Experience() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-zinc-400 leading-relaxed">{exp.description}</p>
+                    <p className="text-sm text-zinc-400 leading-relaxed whitespace-pre-line">{exp.description}</p>
                   </div>
                 </div>
               ))}

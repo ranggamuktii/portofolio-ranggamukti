@@ -68,11 +68,23 @@ function Skill() {
               </p>
             </div>
 
-            {/* Right: Skill cards list */}
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-              {uniqueSkills.map(({ id, img_src, label, description }) => (
-                <SkillCard key={id} imgSrc={img_src || '/figma.svg'} label={label} desc={description || 'Development Tool'} classes="reveal-up" />
-              ))}
+              {uniqueSkills.map(({ id, img_src, label, description }) => {
+                const getIcon = (lbl) => {
+                  const l = lbl.toLowerCase();
+                  if (l.includes('react')) return '/react.svg';
+                  if (l.includes('node')) return '/nodejs.svg';
+                  if (l.includes('express')) return '/expressjs.svg';
+                  if (l.includes('tailwind')) return '/tailwindcss.svg';
+                  if (l.includes('mongo')) return '/mongodb.svg';
+                  if (l.includes('java')) return '/javascript.svg';
+                  if (l.includes('css')) return '/css3.svg';
+                  return `https://ui-avatars.com/api/?name=${encodeURIComponent(lbl)}&background=38bdf8&color=fff&rounded=true&bold=true`;
+                };
+                return (
+                  <SkillCard key={id} imgSrc={img_src || getIcon(label)} label={label} desc={description || 'Development Tool'} classes="reveal-up" />
+                );
+              })}
             </div>
           </div>
         )}
