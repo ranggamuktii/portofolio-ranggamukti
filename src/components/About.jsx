@@ -43,7 +43,7 @@ function About() {
   return (
     <section id="about" className="section">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6 md:gap-10 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1.2fr,1fr] gap-6 md:gap-10 items-stretch">
           
           <div className="bg-zinc-800/50 text-left p-7 rounded-3xl md:p-12 border border-zinc-700/30 reveal-up flex flex-col justify-between">
             {loading ? (
@@ -72,7 +72,7 @@ function About() {
           </div>
 
           {/* Code editor card */}
-          <div className="hidden md:flex flex-col rounded-3xl bg-zinc-900/80 border border-zinc-700/40 font-mono text-[13px] text-zinc-500 select-none min-w-[370px] shadow-2xl shadow-black/40 reveal-up overflow-hidden code-editor-card">
+          <div className="hidden lg:flex flex-col rounded-3xl bg-zinc-900/80 border border-zinc-700/40 font-mono text-[13px] text-zinc-500 select-none shadow-2xl shadow-black/40 reveal-up overflow-hidden code-editor-card min-w-0">
             {/* Scan line overlay */}
             <div className="code-scanline"></div>
 
@@ -126,14 +126,14 @@ function About() {
                 </p>
 
                 {/* Line 6: skills */}
-                <p className="pl-5 code-line-hover">
+                <p className="pl-5 code-line-hover whitespace-pre-wrap">
                   <span className="text-sky-300">skills</span>
                   <span className="text-zinc-600">:</span>{' '}
                   <span className="text-zinc-400">[</span>
                   {skills.map((s, i) => (
-                    <span key={s}>
+                    <span key={s} className="inline-block">
                       <span className="text-amber-300">&quot;{s}&quot;</span>
-                      {i < skills.length - 1 && <span className="text-zinc-600">, </span>}
+                      {i < skills.length - 1 && <span className="text-zinc-600 mr-1">,</span>}
                     </span>
                   ))}
                   <span className="text-zinc-400">]</span>

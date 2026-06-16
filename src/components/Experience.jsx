@@ -96,7 +96,21 @@ function Experience() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-zinc-400 leading-relaxed whitespace-pre-line">{exp.description}</p>
+                    <div className="text-sm text-zinc-400 leading-relaxed mt-2">
+                      {exp.description.split(/(?:\n- | - |^- )/).filter(Boolean).map((line, i, arr) => {
+                        const text = line.trim();
+                        const isList = arr.length > 1 || exp.description.trim().startsWith('-');
+                        if (isList) {
+                          return (
+                            <div key={i} className="flex items-start gap-2 mb-1.5">
+                              <span className="text-sky-500/70 mt-[-1px] font-bold">•</span>
+                              <span>{text}</span>
+                            </div>
+                          );
+                        }
+                        return <p key={i} className="whitespace-pre-line">{text}</p>;
+                      })}
+                    </div>
                   </div>
                 </div>
               ))}
