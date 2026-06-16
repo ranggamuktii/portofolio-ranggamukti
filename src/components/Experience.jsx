@@ -103,7 +103,7 @@ function Experience() {
                         if (isList) {
                           return (
                             <div key={i} className="flex items-start gap-2 mb-1.5">
-                              <span className="text-sky-500/70 mt-[-1px] font-bold">•</span>
+                              <span>-</span>
                               <span>{text}</span>
                             </div>
                           );
