@@ -58,7 +58,7 @@ function About() {
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-6 md:gap-10 mt-auto">
+            <div className="flex items-center gap-6 md:gap-10 mt-auto">
               {aboutItems.map(({ label, number }, key) => (
                 <div key={key}>
                   <div className="flex items-center md:mb-1">
