@@ -58,14 +58,14 @@ function About() {
               </p>
             )}
 
-            <div className="flex items-center gap-6 md:gap-10 mt-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-8 mt-auto">
               {aboutItems.map(({ label, number }, key) => (
-                <div key={key}>
-                  <div className="flex items-center md:mb-1">
-                    <span className="text-3xl font-bold md:text-5xl text-zinc-100">{number}</span>
+                <div key={key} className="flex items-center gap-3">
+                  <div className="flex items-center">
+                    <span className="text-4xl font-bold md:text-5xl text-zinc-100">{number}</span>
                     <span className="text-sky-400 font-bold md:text-4xl">+</span>
                   </div>
-                  <p className="text-sm font-medium text-zinc-500">{label}</p>
+                  <p className="text-sm font-medium text-zinc-500 leading-tight max-w-[100px]">{label}</p>
                 </div>
               ))}
             </div>
