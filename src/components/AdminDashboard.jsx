@@ -359,13 +359,18 @@ function AdminDashboard({ onLogout }) {
             <p className="text-zinc-500 text-sm font-medium mb-1">Unread Messages</p>
             <h4 className={`text-2xl font-bold ${analytics.unreadCount > 0 ? 'text-sky-500' : 'text-zinc-400'}`}>{analytics.unreadCount}</h4>
           </div>
-          <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors col-span-1 lg:col-span-2 overflow-hidden">
-            <p className="text-zinc-500 text-sm font-medium mb-2">Traffic Breakdown</p>
-            <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+          <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors col-span-1 lg:col-span-2 flex flex-col justify-center">
+            <p className="text-zinc-500 text-sm font-medium mb-3">Top Traffic Breakdown</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {analytics.details.slice(0, 3).map(d => (
-                <div key={d.page_path} className="shrink-0 flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700">
-                  <span className="text-xs font-mono text-zinc-600 dark:text-zinc-400">{d.page_path}</span>
-                  <span className="text-xs font-bold text-sky-500">{d.view_count}</span>
+                <div key={d.page_path} className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-start justify-center transition-all hover:border-zinc-200 dark:hover:border-zinc-600">
+                  <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1 truncate w-full" title={d.page_path}>
+                    {d.page_path === '/' ? 'Home Page' : d.page_path}
+                  </span>
+                  <div className="flex items-end gap-1">
+                    <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50 leading-none">{d.view_count}</span>
+                    <span className="text-xs font-medium text-sky-500 mb-0.5">views</span>
+                  </div>
                 </div>
               ))}
               {analytics.details.length === 0 && <span className="text-xs text-zinc-500 italic">Tracking views...</span>}
