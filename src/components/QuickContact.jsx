@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getSocialLinks, getSettings } from '../services/api';
 
 const faqs = [
   {
@@ -23,8 +24,8 @@ const faqs = [
   },
 ];
 
-const quickLinks = [
-  { label: 'Email', href: 'mailto:daniswara.ranggamukti@gmail.com', icon: 'mail' },
+const initialQuickLinks = [
+  { label: 'Email', href: '#', icon: 'mail' },
   { label: 'GitHub', href: 'https://github.com/ranggamuktii', icon: 'code' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/ranggamuktii', icon: 'person' },
 ];
@@ -33,6 +34,28 @@ function QuickContact() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [quickLinks, setQuickLinks] = useState(initialQuickLinks);
+
+  useEffect(() => {
+    Promise.all([getSettings(), getSocialLinks()]).then(([settingsData, socialData]) => {
+      let emailLink = 'mailto:daniswara.ranggamukti@gmail.com';
+      if (settingsData && settingsData.contact_email) {
+        emailLink = `mailto:${settingsData.contact_email}`;
+      }
+      
+      const newLinks = [
+        { label: 'Email', href: emailLink, icon: 'mail' }
+      ];
+
+      const github = socialData.find(s => s.platform.toLowerCase() === 'github');
+      if (github) newLinks.push({ label: 'GitHub', href: github.href, icon: 'code' });
+
+      const linkedin = socialData.find(s => s.platform.toLowerCase() === 'linkedin');
+      if (linkedin) newLinks.push({ label: 'LinkedIn', href: linkedin.href, icon: 'person' });
+
+      setQuickLinks(newLinks);
+    }).catch(console.error);
+  }, []);
 
   const handleToggle = () => {
     if (isOpen) {

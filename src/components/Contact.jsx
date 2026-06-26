@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { sendMessage } from '../services/api';
+import { useState, useEffect } from 'react';
+import { sendMessage, getSocialLinks } from '../services/api';
 
 const socialLinks = [
   {
@@ -45,6 +45,26 @@ const socialLinks = [
 const Contact = () => {
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const [errorMsg, setErrorMsg] = useState('');
+  const [dynamicSocials, setDynamicSocials] = useState([]);
+
+  useEffect(() => {
+    getSocialLinks().then(data => {
+      // merge with icons based on platform
+      const merged = data.map(social => {
+        const platformLower = social.platform.toLowerCase();
+        let icon = null;
+        if (platformLower === 'github') icon = socialLinks[0].icon;
+        else if (platformLower === 'linkedin') icon = socialLinks[1].icon;
+        else if (platformLower === 'instagram') icon = socialLinks[2].icon;
+        else {
+          // fallback icon
+          icon = <span className="material-symbols-rounded">link</span>;
+        }
+        return { ...social, icon };
+      });
+      setDynamicSocials(merged);
+    }).catch(console.error);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,11 +99,13 @@ const Contact = () => {
           <h2 className="headline-2 lg:max-w-[12ch] reveal-up">Contact me for collaboration</h2>
           <p className="text-zinc-400 mt-3 mb-8 max-w-[50ch] lg:max-w-[30ch] reveal-up">Reach out today to discuss your project needs and start collaborating on something amazing!</p>
           <div className="flex items-center gap-2 mt-auto">
-            {socialLinks.map(({ href, icon }, key) => (
+            {dynamicSocials.map(({ href, icon, platform }, key) => (
               <a
                 key={key}
                 href={href}
                 target="_blank"
+                title={platform}
+                rel="noreferrer"
                 className="w-12 h-12 grid place-items-center ring-inset ring-2 ring-zinc-50/5 rounded-lg transition-[background-color,color] hover:bg-zinc-50 hover:text-zinc-950 active:bg-zinc-50/80 reveal-up"
               >
                 {icon}

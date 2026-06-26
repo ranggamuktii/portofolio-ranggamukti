@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { ButtonPrimary } from './Button';
+import { getSocialLinks } from '../services/api';
 
 const sitemap = [
   {
@@ -39,6 +41,12 @@ const socials = [
 ];
 
 function Footer() {
+  const [dynamicSocials, setDynamicSocials] = useState([]);
+
+  useEffect(() => {
+    getSocialLinks().then(setDynamicSocials).catch(console.error);
+  }, []);
+
   return (
     <footer className="section">
       <div className="container text-left">
@@ -64,10 +72,10 @@ function Footer() {
             <div>
               <p className="mb-2 reveal-up">Socials</p>
               <ul>
-                {socials.map(({ label, href }, key) => (
+                {dynamicSocials.map(({ platform, href }, key) => (
                   <li key={key}>
-                    <a href={href} target="_blank" className="block text-sm text-zinc-400 py-1 transition-colors hover:text-zinc-200 reveal-up">
-                      {label}
+                    <a href={href} target="_blank" rel="noreferrer" className="block text-sm text-zinc-400 py-1 transition-colors hover:text-zinc-200 reveal-up capitalize">
+                      {platform}
                     </a>
                   </li>
                 ))}

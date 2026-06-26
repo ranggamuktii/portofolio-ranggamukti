@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getExperiences, getSettings, getUploadUrl } from '../services/api';
+import { getExperiences, getSettings, getSocialLinks, getUploadUrl } from '../services/api';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,6 +9,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 function Experience() {
   const [experiences, setExperiences] = useState([]);
   const [settings, setSettings] = useState(null);
+  const [socialLink, setSocialLink] = useState('https://linkedin.com/in/ranggamuktii');
   const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
 
@@ -34,10 +35,12 @@ function Experience() {
   }, { dependencies: [loading, experiences], scope: containerRef });
 
   useEffect(() => {
-    Promise.all([getExperiences(), getSettings()])
-      .then(([expData, setData]) => {
+    Promise.all([getExperiences(), getSettings(), getSocialLinks()])
+      .then(([expData, setData, socialData]) => {
         setExperiences(expData);
         setSettings(setData);
+        const ln = socialData.find(s => s.platform.toLowerCase() === 'linkedin');
+        if (ln) setSocialLink(ln.href);
         setLoading(false);
       })
       .catch(err => {
@@ -120,7 +123,7 @@ function Experience() {
 
         {/* Links */}
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center reveal-up">
-          <a href="https://linkedin.com/in/ranggamuktii" target="_blank" rel="noreferrer" className="btn btn-primary shadow-lg shadow-sky-500/20">
+          <a href={socialLink} target="_blank" rel="noreferrer" className="btn btn-primary shadow-lg shadow-sky-500/20">
             View Full Profile
             <span className="material-symbols-rounded" aria-hidden="true">open_in_new</span>
           </a>
