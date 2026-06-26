@@ -2,11 +2,15 @@
   RewriteEngine On
   RewriteBase /
 
-  # 1. Handle API Requests -> Route to PHP Backend
+  # 1. Allow direct access to PHP files in /api/ (e.g. seed scripts)
+  RewriteCond %{REQUEST_URI} ^/api/.*\.php$ [NC]
+  RewriteRule ^ - [L]
+
+  # 2. Handle API Requests -> Route to PHP Backend
   RewriteCond %{REQUEST_URI} ^/api/ [NC]
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
-  # 2. Handle React Router (SPA) -> Route to index.html
+  # 3. Handle React Router (SPA) -> Route to index.html
   # If the request is not for a real file or directory
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
