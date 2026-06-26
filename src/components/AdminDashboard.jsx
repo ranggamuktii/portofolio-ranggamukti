@@ -321,7 +321,7 @@ function AdminDashboard({ onLogout }) {
       <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 transition-colors">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-400">
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
               Admin Portofolio
             </h1>
           </div>
@@ -519,7 +519,7 @@ function AdminDashboard({ onLogout }) {
                       : [];
                     return (
                       <div key={project.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">
-                        <div className="relative aspect-video overflow-hidden border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800">
+                        <div className="relative aspect-square overflow-hidden border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800">
                           <img src={project.img_src ? getUploadUrl(project.img_src) : '/images/placeholder.jpg'} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="absolute bottom-4 right-4 flex gap-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
@@ -541,7 +541,7 @@ function AdminDashboard({ onLogout }) {
                           )}
 
                           <h3 className="text-xl font-bold mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{project.title}</h3>
-                          <p className="text-zinc-500 dark:text-zinc-400 text-sm line-clamp-2 mb-4 flex-1">{project.description}</p>
+                          <p className="text-zinc-500 dark:text-zinc-400 text-sm line-clamp-2 whitespace-pre-wrap mb-4 flex-1">{project.description}</p>
 
                           <div className="flex items-center gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800/50 mt-auto">
                             {project.demo_link && (
@@ -634,7 +634,7 @@ function AdminDashboard({ onLogout }) {
                       <div className="flex gap-4 text-sm text-zinc-500 mb-2">
                         <span>{exp.company}</span> • <span>{exp.location}</span> • <span>{exp.start_date} - {exp.end_date}</span>
                       </div>
-                      <p className="text-zinc-600 dark:text-zinc-400 text-sm">{exp.description}</p>
+                      <p className="text-zinc-600 dark:text-zinc-400 text-sm whitespace-pre-wrap">{exp.description}</p>
                     </div>
                     <div className="flex md:flex-col gap-2 shrink-0">
                       <button onClick={() => handleOpenExpModal(exp)} className="p-2.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-xl"><span className="material-symbols-rounded text-base">edit</span></button>

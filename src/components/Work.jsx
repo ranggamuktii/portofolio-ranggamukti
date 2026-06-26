@@ -21,6 +21,7 @@ function Work() {
           tags: project.tags || [],
           projectLink: project.demo_link || project.github_link || '',
           slug: project.slug,
+          description: project.description,
         }));
         setWorks(formattedProjects);
       } catch (error) {
@@ -124,9 +125,9 @@ function Work() {
           </div>
         ) : (
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 lg:gap-8 space-y-6 lg:space-y-8">
-            {works.map(({ imgSrc, title, tags, projectLink, slug }, key) => (
+            {works.map(({ imgSrc, title, tags, projectLink, slug, description }, key) => (
               <div key={key} className="break-inside-avoid">
-                <ProjectCard imgSrc={imgSrc} title={title} tags={tags} projectLink={projectLink} slug={slug} classes="reveal-up" />
+                <ProjectCard imgSrc={imgSrc} title={title} tags={tags} projectLink={projectLink} slug={slug} description={description} classes="reveal-up" />
               </div>
             ))}
           </div>

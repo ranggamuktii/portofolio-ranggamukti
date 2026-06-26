@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getUploadUrl } from '../services/api';
 
-function ProjectCard({ imgSrc, title, tags, projectLink, slug, classes }) {
+function ProjectCard({ imgSrc, title, description, tags, projectLink, slug, classes }) {
   return (
     <div className={`group flex flex-col bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/60 backdrop-blur-sm rounded-[32px] overflow-hidden hover:border-sky-500/50 dark:hover:border-sky-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-500/10 ${classes}`}>
       
@@ -45,7 +45,13 @@ function ProjectCard({ imgSrc, title, tags, projectLink, slug, classes }) {
           {title}
         </h3>
         
-        <div className="mt-auto pt-6 flex flex-wrap sm:flex-nowrap items-center gap-3">
+        {description && (
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 mb-4 whitespace-pre-wrap">
+            {description}
+          </p>
+        )}
+        
+        <div className="mt-auto pt-4 flex flex-wrap sm:flex-nowrap items-center gap-3">
           <Link 
             to={`/project/${slug}`} 
             className="flex-1 text-center py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-100 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-transparent dark:border-zinc-700"

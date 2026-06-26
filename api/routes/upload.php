@@ -32,19 +32,53 @@ function uploadFile() {
         return;
     }
 
-    // Create uploads dir if not exists (one level up from api)
-    $uploadDir = dirname(__DIR__, 2) . '/public/uploads';
+    // Create uploads dir if not exists (in public_html/uploads)
+    $uploadDir = dirname(__DIR__, 2) . '/uploads';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    $filename = time() . '-' . rand(100000000, 999999999) . '.' . $ext;
+    $filename = time() . '-' . rand(100000000, 999999999) . '.webp';
     $targetPath = $uploadDir . '/' . $filename;
 
-    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+    // Compress and convert to WEBP using PHP GD
+    $sourceImage = null;
+    switch($ext) {
+        case 'jpg':
+        case 'jpeg':
+            $sourceImage = @imagecreatefromjpeg($file['tmp_name']);
+            break;
+        case 'png':
+            $sourceImage = @imagecreatefrompng($file['tmp_name']);
+            // preserve transparency
+            if ($sourceImage) {
+                imagepalettetotruecolor($sourceImage);
+                imagealphablending($sourceImage, true);
+                imagesavealpha($sourceImage, true);
+            }
+            break;
+        case 'gif':
+            $sourceImage = @imagecreatefromgif($file['tmp_name']);
+            break;
+        case 'webp':
+            $sourceImage = @imagecreatefromwebp($file['tmp_name']);
+            break;
+    }
+
+    if ($sourceImage) {
+        // Save as WebP with 80% quality
+        imagewebp($sourceImage, $targetPath, 80);
+        imagedestroy($sourceImage);
         echo json_encode(['url' => '/uploads/' . $filename]);
     } else {
-        http_response_code(500);
-        echo json_encode(['error' => 'Failed to save file']);
+        // Fallback for SVGs or if GD fails
+        $fallbackFilename = time() . '-' . rand(100000000, 999999999) . '.' . $ext;
+        $fallbackPath = $uploadDir . '/' . $fallbackFilename;
+        if (move_uploaded_file($file['tmp_name'], $fallbackPath)) {
+            echo json_encode(['url' => '/uploads/' . $fallbackFilename]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to save file']);
+        }
     }
 }

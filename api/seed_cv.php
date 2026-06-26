@@ -25,7 +25,7 @@ try {
     // 2. UPDATE SOCIAL LINKS
     $db->exec('DELETE FROM social_links');
     $socials = [
-        ['LinkedIn', 'LinkedIn', 'https://www.linkedin.com/in/ranggamukti', 'logo-linkedin', 1],
+        ['LinkedIn', 'LinkedIn', 'https://www.linkedin.com/in/ranggamuktii', 'logo-linkedin', 1],
         ['GitHub', 'GitHub', 'https://github.com/ranggamuktii', 'logo-github', 2]
     ];
     $stmt = $db->prepare('INSERT INTO social_links (platform, label, href, icon, order_index) VALUES (?, ?, ?, ?, ?)');
