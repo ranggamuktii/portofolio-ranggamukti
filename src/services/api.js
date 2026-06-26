@@ -1,6 +1,25 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+export const getUploadUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+
+  // Convert old /uploads/... to /api/uploads/... for production compatibility
+  let finalPath = path;
+  if (path.startsWith('/uploads/')) {
+    finalPath = `/api${path}`;
+  }
+
+  // If we have an absolute API_URL (like http://localhost:5000/api)
+  if (API_URL.startsWith('http')) {
+    const baseUrl = API_URL.replace(/\/api\/?$/, ''); // Remove /api from the end
+    return `${baseUrl}${finalPath}`; // baseUrl + /api/uploads/...
+  }
+  
+  return finalPath; // returns /api/uploads/...
+};
 
 // Auth
 export const login = async (username, password) => {

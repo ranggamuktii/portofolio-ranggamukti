@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import sharp from 'sharp';
 import { authenticateToken } from '../middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -15,23 +16,31 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// Use memory storage to process image with sharp before saving
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post('/', authenticateToken, upload.single('image'), (req, res) => {
+router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  res.json({ url: `/uploads/${req.file.filename}` });
+
+  try {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    // Convert to webp for better compression
+    const filename = uniqueSuffix + '.webp';
+    const filepath = path.join(uploadDir, filename);
+
+    await sharp(req.file.buffer)
+      .resize({ width: 1280, withoutEnlargement: true }) // Resize if larger than 1280px width
+      .webp({ quality: 80 }) // Compress to webp with 80% quality
+      .toFile(filepath);
+
+    res.json({ url: `/api/uploads/${filename}` });
+  } catch (error) {
+    console.error('Image processing error:', error);
+    res.status(500).json({ error: 'Failed to process image' });
+  }
 });
 
 export default router;
