@@ -6,19 +6,15 @@ export const getUploadUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
 
-  // Convert old /uploads/... to /api/uploads/... for production compatibility
-  let finalPath = path;
-  if (path.startsWith('/uploads/')) {
-    finalPath = `/api${path}`;
-  }
-
-  // If we have an absolute API_URL (like http://localhost:5000/api)
-  if (API_URL.startsWith('http')) {
-    const baseUrl = API_URL.replace(/\/api\/?$/, ''); // Remove /api from the end
-    return `${baseUrl}${finalPath}`; // baseUrl + /api/uploads/...
+  // If in development and API_URL is absolute (e.g. http://localhost:5000/api), 
+  // point directly to the dev server to avoid vite proxy issues.
+  if (import.meta.env.DEV && API_URL.startsWith('http')) {
+    const baseUrl = API_URL.replace(/\/api\/?$/, '');
+    return `${baseUrl}${path}`;
   }
   
-  return finalPath; // returns /api/uploads/...
+  // In production, the PHP script and Hostinger will serve /uploads/ directly.
+  return path;
 };
 
 // Auth

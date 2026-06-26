@@ -36,7 +36,7 @@ router.post('/', authenticateToken, upload.single('image'), async (req, res) => 
       .webp({ quality: 80 }) // Compress to webp with 80% quality
       .toFile(filepath);
 
-    res.json({ url: `/api/uploads/${filename}` });
+    res.json({ url: `/uploads/${filename}` });
   } catch (error) {
     console.error('Image processing error:', error);
     res.status(500).json({ error: 'Failed to process image' });
