@@ -94,6 +94,10 @@ switch ($resource) {
         require_once __DIR__ . '/routes/certifications.php';
         handleCertifications($method, $segments, $body);
         break;
+    case 'skill-badges':
+        require_once __DIR__ . '/routes/skill_badges.php';
+        handleSkillBadges($method, $segments, $body);
+        break;
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Route not found']);

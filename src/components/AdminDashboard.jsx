@@ -8,7 +8,8 @@ import {
   getExperiences, createExperience, updateExperience, deleteExperience,
   getSettings, updateSettings, uploadImage, getUploadUrl,
   getMessages, markMessageRead, deleteMessage, getAnalytics,
-  getCertifications, createCertification, updateCertification, deleteCertification
+  getCertifications, createCertification, updateCertification, deleteCertification,
+  getSkillBadges, createSkillBadge, updateSkillBadge, deleteSkillBadge
 } from '../services/api';
 import { ThemeContext } from '../ThemeProvider';
 
@@ -22,6 +23,7 @@ function AdminDashboard({ onLogout }) {
   const [socialLinks, setSocialLinks] = useState([]);
   const [skills, setSkills] = useState([]);
   const [certifications, setCertifications] = useState([]);
+  const [skillBadges, setSkillBadges] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [settings, setSettings] = useState({
     hero_title: '',
@@ -52,6 +54,12 @@ function AdminDashboard({ onLogout }) {
   const [editingCert, setEditingCert] = useState(null);
   const [certForm, setCertForm] = useState({ name: '', issuer: '', issue_date: '', credential_url: '', badge_img: '', order_index: 0 });
 
+  const [isBadgeModalOpen, setIsBadgeModalOpen] = useState(false);
+  const [editingBadge, setEditingBadge] = useState(null);
+  const [badgeForm, setBadgeForm] = useState({ name: '', category: 'Frontend', icon_url: '', level: 'Intermediate', color: '#38bdf8', order_index: 0 });
+  const BADGE_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+  const BADGE_COLORS = ['#38bdf8', '#818cf8', '#34d399', '#fb923c', '#f472b6', '#a78bfa', '#facc15', '#f87171'];
+
   const [toast, setToast] = useState('');
 
   // Refs for scrollable modal divs — needed to add native (non-passive) wheel
@@ -60,6 +68,7 @@ function AdminDashboard({ onLogout }) {
   const skillScrollRef = useRef(null);
   const expScrollRef = useRef(null);
   const certScrollRef = useRef(null);
+  const badgeScrollRef = useRef(null);
 
   // Native wheel handler: scroll the div itself and stop propagation so Lenis never sees the event.
   const handleModalWheel = useCallback((e) => {
@@ -97,13 +106,17 @@ function AdminDashboard({ onLogout }) {
     if (isCertModalOpen) { setTimeout(() => attachWheel(certScrollRef), 0); }
     else { detachWheel(certScrollRef); }
 
+    if (isBadgeModalOpen) { setTimeout(() => attachWheel(badgeScrollRef), 0); }
+    else { detachWheel(badgeScrollRef); }
+
     return () => {
       detachWheel(projectScrollRef);
       detachWheel(skillScrollRef);
       detachWheel(expScrollRef);
       detachWheel(certScrollRef);
+      detachWheel(badgeScrollRef);
     };
-  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, handleModalWheel]);
+  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, isBadgeModalOpen, handleModalWheel]);
 
   useEffect(() => {
     if (activeTab === 'projects') loadProjects();
@@ -113,12 +126,13 @@ function AdminDashboard({ onLogout }) {
     else if (activeTab === 'settings') loadSettings();
     else if (activeTab === 'inbox') loadMessages();
     else if (activeTab === 'certifications') loadCertifications();
+    else if (activeTab === 'skill-badges') loadSkillBadges();
 
     loadAnalytics(); // Always refresh analytics on heartbeats
   }, [activeTab]);
 
   useEffect(() => {
-    const isAnyModalOpen = isProjectModalOpen || isSkillModalOpen || isExpModalOpen || isCertModalOpen;
+    const isAnyModalOpen = isProjectModalOpen || isSkillModalOpen || isExpModalOpen || isCertModalOpen || isBadgeModalOpen;
     if (isAnyModalOpen) {
       // Store scroll position before locking
       const scrollY = window.scrollY;
@@ -149,7 +163,7 @@ function AdminDashboard({ onLogout }) {
       if (scrollY) window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
       if (lenis) lenis.start();
     };
-  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, lenis]);
+  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, isBadgeModalOpen, lenis]);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -180,6 +194,7 @@ function AdminDashboard({ onLogout }) {
   const loadMessages = async () => { setLoading(true); try { setMessages(await getMessages() || []); } catch (e) { console.error(e); } finally { setLoading(false); } };
   const loadAnalytics = async () => { try { setAnalytics(await getAnalytics() || { totalViews: 0, unreadCount: 0, details: [] }); } catch (e) { console.error(e); } };
   const loadCertifications = async () => { setLoading(true); try { setCertifications(await getCertifications() || []); } catch (e) { console.error(e); } finally { setLoading(false); } };
+  const loadSkillBadges = async () => { setLoading(true); try { setSkillBadges(await getSkillBadges() || []); } catch (e) { console.error(e); } finally { setLoading(false); } };
 
   /* PROJECTS */
   const handleOpenProjectModal = (project = null) => {
@@ -310,6 +325,31 @@ function AdminDashboard({ onLogout }) {
     if (!window.confirm('Delete this certification?')) return;
     try { await deleteCertification(id); showToast('Certification deleted.'); loadCertifications(); }
     catch (e) { alert('Failed to delete certification'); }
+  };
+
+  /* SKILL BADGES */
+  const handleOpenBadgeModal = (badge = null) => {
+    if (badge) { setEditingBadge(badge); setBadgeForm(badge); }
+    else { setEditingBadge(null); setBadgeForm({ name: '', category: 'Frontend', icon_url: '', level: 'Intermediate', color: '#38bdf8', order_index: 0 }); }
+    setIsBadgeModalOpen(true);
+  };
+
+  const handleSaveBadge = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (editingBadge) { await updateSkillBadge(editingBadge.id, badgeForm); showToast('Badge updated!'); }
+      else { await createSkillBadge(badgeForm); showToast('Badge added!'); }
+      setIsBadgeModalOpen(false);
+      loadSkillBadges();
+    } catch (error) { alert(error.response?.data?.error || 'Failed to save badge'); }
+    finally { setLoading(false); }
+  };
+
+  const handleDeleteBadge = async (id) => {
+    if (!window.confirm('Delete this skill badge?')) return;
+    try { await deleteSkillBadge(id); showToast('Badge deleted.'); loadSkillBadges(); }
+    catch (e) { alert('Failed to delete badge'); }
   };
 
   /* SOCIAL LINKS */
@@ -467,7 +507,7 @@ function AdminDashboard({ onLogout }) {
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 mb-8 bg-zinc-100 dark:bg-zinc-900/50 p-1.5 rounded-2xl w-fit transition-colors">
-          {['settings', 'inbox', 'projects', 'certifications', 'skills', 'experiences', 'social'].map(tab => (
+          {['settings', 'inbox', 'projects', 'certifications', 'skill-badges', 'skills', 'experiences', 'social'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -812,10 +852,132 @@ function AdminDashboard({ onLogout }) {
             </div>
           )}
 
+          {activeTab === 'skill-badges' && (
+            <div className="animate-fade-in">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold">Skill Badges</h2>
+                <button onClick={() => handleOpenBadgeModal()} className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-violet-600/20 font-medium">
+                  <span className="material-symbols-rounded">add</span> Add Badge
+                </button>
+              </div>
+
+              {skillBadges.length === 0 ? (
+                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-12 text-center flex flex-col items-center">
+                  <span className="material-symbols-rounded text-6xl text-zinc-300 dark:text-zinc-700 mb-4">badge</span>
+                  <h3 className="text-xl font-bold mb-2">No Skill Badges Yet</h3>
+                  <p className="text-zinc-500 max-w-md mb-6">Add skill badges to showcase your tech stack proficiency levels.</p>
+                  <button onClick={() => handleOpenBadgeModal()} className="bg-violet-600 hover:bg-violet-500 text-white px-6 py-2.5 rounded-xl transition-all font-medium">
+                    Add First Badge
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* Group by category */}
+                  {[...new Set(skillBadges.map(b => b.category))].sort().map(cat => (
+                    <div key={cat} className="mb-8">
+                      <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-3 ml-1">{cat}</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {skillBadges.filter(b => b.category === cat).map(badge => (
+                          <div key={badge.id} className="group relative flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md transition-all">
+                            {badge.icon_url && (
+                              <img src={badge.icon_url.startsWith('http') ? badge.icon_url : getUploadUrl(badge.icon_url)} alt={badge.name} className="w-5 h-5 object-contain" />
+                            )}
+                            <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">{badge.name}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: badge.color + '22', color: badge.color }}>{badge.level}</span>
+                            <div className="absolute -top-2 -right-2 hidden group-hover:flex gap-1">
+                              <button onClick={() => handleOpenBadgeModal(badge)} className="w-6 h-6 bg-white dark:bg-zinc-800 rounded-full shadow border border-zinc-200 dark:border-zinc-700 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                                <span className="material-symbols-rounded text-[12px]">edit</span>
+                              </button>
+                              <button onClick={() => handleDeleteBadge(badge.id)} className="w-6 h-6 bg-red-50 dark:bg-red-900/30 rounded-full shadow border border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-100 text-red-500 transition-colors">
+                                <span className="material-symbols-rounded text-[12px]">close</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
 
       {/* ================== MODALS ================== */}
+
+      {/* SKILL BADGE MODAL */}
+      {isBadgeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget && !loading) setIsBadgeModalOpen(false); }}>
+          <div className="absolute inset-0 bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm -z-10"></div>
+          <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <form onSubmit={handleSaveBadge} className="flex flex-col flex-1 min-h-0 rounded-3xl overflow-hidden">
+              <div className="p-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
+                <h3 className="text-xl font-bold">{editingBadge ? 'Edit Skill Badge' : 'Add Skill Badge'}</h3>
+              </div>
+              <div ref={badgeScrollRef} className="p-6 overflow-y-scroll overscroll-contain flex-1 min-h-0 space-y-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Skill Name *</label>
+                  <input required type="text" placeholder="e.g. React.js, Docker, PostgreSQL" value={badgeForm.name} onChange={e => setBadgeForm({ ...badgeForm, name: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Category *</label>
+                  <input required type="text" placeholder="e.g. Frontend, Backend, DevOps, Cloud" value={badgeForm.category} onChange={e => setBadgeForm({ ...badgeForm, category: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Proficiency Level</label>
+                  <div className="flex flex-wrap gap-2">
+                    {BADGE_LEVELS.map(lvl => (
+                      <button key={lvl} type="button" onClick={() => setBadgeForm({ ...badgeForm, level: lvl })}
+                        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${badgeForm.level === lvl ? 'bg-sky-600 text-white border-sky-600' : 'border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400'}`}>
+                        {lvl}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Badge Color</label>
+                  <div className="flex gap-2 flex-wrap items-center">
+                    {BADGE_COLORS.map(c => (
+                      <button key={c} type="button" onClick={() => setBadgeForm({ ...badgeForm, color: c })}
+                        style={{ backgroundColor: c }}
+                        className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${badgeForm.color === c ? 'border-white scale-110 shadow-lg' : 'border-transparent'}`} />
+                    ))}
+                    <input type="color" value={badgeForm.color} onChange={e => setBadgeForm({ ...badgeForm, color: e.target.value })} className="w-8 h-8 rounded-full cursor-pointer border-0 bg-transparent" title="Custom color" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Icon URL</label>
+                  <div className="flex gap-3 items-center">
+                    {badgeForm.icon_url && (
+                      <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center p-1">
+                        <img src={badgeForm.icon_url.startsWith('http') ? badgeForm.icon_url : getUploadUrl(badgeForm.icon_url)} alt="Preview" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                    <div className="flex-1 flex gap-2">
+                      <input type="text" placeholder="URL or upload image..." value={badgeForm.icon_url} onChange={e => setBadgeForm({ ...badgeForm, icon_url: e.target.value })} className="flex-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0 text-sm" />
+                      <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
+                        <span className="material-symbols-rounded text-[18px]">upload</span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setBadgeForm, 'icon_url')} disabled={loading} />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Order Index</label>
+                  <input type="number" value={badgeForm.order_index} onChange={e => setBadgeForm({ ...badgeForm, order_index: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+              </div>
+              <div className="p-6 pt-4 flex justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800 shrink-0 bg-white dark:bg-zinc-900">
+                <button type="button" onClick={() => setIsBadgeModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600">Cancel</button>
+                <button type="submit" disabled={loading} className="px-6 py-2.5 rounded-xl font-medium bg-violet-600 hover:bg-violet-500 text-white">{loading ? 'Saving...' : 'Save Badge'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
 
       {/* CERTIFICATION MODAL */}
       {isCertModalOpen && (

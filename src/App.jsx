@@ -15,6 +15,7 @@ import About from './components/About';
 import Skill from './components/Skill';
 import Experience from './components/Experience';
 import Certifications from './components/Certifications';
+import SkillBadges from './components/SkillBadges';
 import Work from './components/Work';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -60,6 +61,7 @@ function HomePage() {
         <Hero />
         <About />
         <Skill />
+        <SkillBadges />
         <Experience />
         <Certifications />
         <Work />

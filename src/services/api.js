@@ -260,3 +260,33 @@ export const deleteCertification = async (id) => {
   });
   return response.data;
 };
+
+// Skill Badges
+export const getSkillBadges = async () => {
+  const response = await axios.get(`${API_URL}/skill-badges`);
+  return response.data;
+};
+
+export const createSkillBadge = async (data) => {
+  const token = getAuthToken();
+  const response = await axios.post(`${API_URL}/skill-badges`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const updateSkillBadge = async (id, data) => {
+  const token = getAuthToken();
+  const response = await axios.put(`${API_URL}/skill-badges/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const deleteSkillBadge = async (id) => {
+  const token = getAuthToken();
+  const response = await axios.delete(`${API_URL}/skill-badges/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
