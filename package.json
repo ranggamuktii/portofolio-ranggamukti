@@ -32,6 +32,7 @@
     "react-dom": "^19.0.0",
     "react-icon-cloud": "^4.1.7",
     "react-router-dom": "^7.5.0",
+    "sharp": "^0.33.2",
     "tailwind-scrollbar": "^3.1.0"
   },
   "devDependencies": {
