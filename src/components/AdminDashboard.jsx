@@ -7,7 +7,8 @@ import {
   getSkills, createSkill, updateSkill, deleteSkill,
   getExperiences, createExperience, updateExperience, deleteExperience,
   getSettings, updateSettings, uploadImage, getUploadUrl,
-  getMessages, markMessageRead, deleteMessage, getAnalytics
+  getMessages, markMessageRead, deleteMessage, getAnalytics,
+  getCertifications, createCertification, updateCertification, deleteCertification
 } from '../services/api';
 import { ThemeContext } from '../ThemeProvider';
 
@@ -20,6 +21,7 @@ function AdminDashboard({ onLogout }) {
   const [projects, setProjects] = useState([]);
   const [socialLinks, setSocialLinks] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [certifications, setCertifications] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [settings, setSettings] = useState({
     hero_title: '',
@@ -46,6 +48,10 @@ function AdminDashboard({ onLogout }) {
   const [editingExp, setEditingExp] = useState(null);
   const [expForm, setExpForm] = useState({ title: '', company: '', location: '', start_date: '', end_date: '', description: '', is_education: false, order_index: 0, logo_icon: 'work', company_logo: '' });
 
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [editingCert, setEditingCert] = useState(null);
+  const [certForm, setCertForm] = useState({ name: '', issuer: '', issue_date: '', credential_url: '', badge_img: '', order_index: 0 });
+
   const [toast, setToast] = useState('');
 
   // Refs for scrollable modal divs — needed to add native (non-passive) wheel
@@ -53,6 +59,7 @@ function AdminDashboard({ onLogout }) {
   const projectScrollRef = useRef(null);
   const skillScrollRef = useRef(null);
   const expScrollRef = useRef(null);
+  const certScrollRef = useRef(null);
 
   // Native wheel handler: scroll the div itself and stop propagation so Lenis never sees the event.
   const handleModalWheel = useCallback((e) => {
@@ -87,12 +94,16 @@ function AdminDashboard({ onLogout }) {
     if (isExpModalOpen) { setTimeout(() => attachWheel(expScrollRef), 0); }
     else { detachWheel(expScrollRef); }
 
+    if (isCertModalOpen) { setTimeout(() => attachWheel(certScrollRef), 0); }
+    else { detachWheel(certScrollRef); }
+
     return () => {
       detachWheel(projectScrollRef);
       detachWheel(skillScrollRef);
       detachWheel(expScrollRef);
+      detachWheel(certScrollRef);
     };
-  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, handleModalWheel]);
+  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, handleModalWheel]);
 
   useEffect(() => {
     if (activeTab === 'projects') loadProjects();
@@ -101,12 +112,13 @@ function AdminDashboard({ onLogout }) {
     else if (activeTab === 'experiences') loadExperiences();
     else if (activeTab === 'settings') loadSettings();
     else if (activeTab === 'inbox') loadMessages();
+    else if (activeTab === 'certifications') loadCertifications();
 
     loadAnalytics(); // Always refresh analytics on heartbeats
   }, [activeTab]);
 
   useEffect(() => {
-    const isAnyModalOpen = isProjectModalOpen || isSkillModalOpen || isExpModalOpen;
+    const isAnyModalOpen = isProjectModalOpen || isSkillModalOpen || isExpModalOpen || isCertModalOpen;
     if (isAnyModalOpen) {
       // Store scroll position before locking
       const scrollY = window.scrollY;
@@ -137,7 +149,7 @@ function AdminDashboard({ onLogout }) {
       if (scrollY) window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
       if (lenis) lenis.start();
     };
-  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, lenis]);
+  }, [isProjectModalOpen, isSkillModalOpen, isExpModalOpen, isCertModalOpen, lenis]);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -167,6 +179,7 @@ function AdminDashboard({ onLogout }) {
   const loadSettings = async () => { setLoading(true); try { setSettings(await getSettings() || {}); } catch (e) { console.error(e); } finally { setLoading(false); } };
   const loadMessages = async () => { setLoading(true); try { setMessages(await getMessages() || []); } catch (e) { console.error(e); } finally { setLoading(false); } };
   const loadAnalytics = async () => { try { setAnalytics(await getAnalytics() || { totalViews: 0, unreadCount: 0, details: [] }); } catch (e) { console.error(e); } };
+  const loadCertifications = async () => { setLoading(true); try { setCertifications(await getCertifications() || []); } catch (e) { console.error(e); } finally { setLoading(false); } };
 
   /* PROJECTS */
   const handleOpenProjectModal = (project = null) => {
@@ -269,6 +282,36 @@ function AdminDashboard({ onLogout }) {
     catch (e) { alert('Failed to delete experience'); }
   };
 
+  /* CERTIFICATIONS */
+  const handleOpenCertModal = (cert = null) => {
+    if (cert) {
+      setEditingCert(cert);
+      setCertForm(cert);
+    } else {
+      setEditingCert(null);
+      setCertForm({ name: '', issuer: '', issue_date: '', credential_url: '', badge_img: '', order_index: 0 });
+    }
+    setIsCertModalOpen(true);
+  };
+
+  const handleSaveCert = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (editingCert) { await updateCertification(editingCert.id, certForm); showToast('Certification updated!'); }
+      else { await createCertification(certForm); showToast('Certification added!'); }
+      setIsCertModalOpen(false);
+      loadCertifications();
+    } catch (error) { alert(error.response?.data?.error || 'Failed to save certification'); }
+    finally { setLoading(false); }
+  };
+
+  const handleDeleteCert = async (id) => {
+    if (!window.confirm('Delete this certification?')) return;
+    try { await deleteCertification(id); showToast('Certification deleted.'); loadCertifications(); }
+    catch (e) { alert('Failed to delete certification'); }
+  };
+
   /* SOCIAL LINKS */
   const handleAddSocialLink = () => setSocialLinks([...socialLinks, { platform: '', href: '' }]);
   const handleRemoveSocialLink = (index) => { const updated = [...socialLinks]; updated.splice(index, 1); setSocialLinks(updated); };
@@ -352,9 +395,7 @@ function AdminDashboard({ onLogout }) {
         {/* Analytics Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-rounded text-6xl text-sky-500">visibility</span>
-            </div>
+
             <div className="relative z-10">
               <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-500/10 flex items-center justify-center mb-4">
                 <span className="material-symbols-rounded text-sky-600 dark:text-sky-400 text-2xl">monitoring</span>
@@ -366,9 +407,7 @@ function AdminDashboard({ onLogout }) {
           </div>
 
           <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className={`material-symbols-rounded text-6xl ${analytics.unreadCount > 0 ? 'text-amber-500' : 'text-emerald-500'}`}>mark_email_unread</span>
-            </div>
+
             <div className="relative z-10">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${analytics.unreadCount > 0 ? 'bg-amber-50 dark:bg-amber-500/10' : 'bg-emerald-50 dark:bg-emerald-500/10'}`}>
                 <span className={`material-symbols-rounded text-2xl ${analytics.unreadCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>mail</span>
@@ -382,9 +421,7 @@ function AdminDashboard({ onLogout }) {
           </div>
 
           <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300 col-span-1 lg:col-span-2 flex flex-col justify-between group hover:shadow-lg hover:-translate-y-1">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <span className="material-symbols-rounded text-8xl text-indigo-500">leaderboard</span>
-            </div>
+
             <div className="relative z-10 mb-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
                 <span className="material-symbols-rounded text-indigo-600 dark:text-indigo-400 text-xl">insights</span>
@@ -400,9 +437,9 @@ function AdminDashboard({ onLogout }) {
                   'text-sky-600 dark:text-sky-400'
                 ];
                 const bgColors = [
-                  'bg-fuchsia-50 dark:bg-fuchsia-500/5',
-                  'bg-violet-50 dark:bg-violet-500/5',
-                  'bg-sky-50 dark:bg-sky-500/5'
+                  'bg-zinc-50 dark:bg-zinc-800/50',
+                  'bg-zinc-50 dark:bg-zinc-800/50',
+                  'bg-zinc-50 dark:bg-zinc-800/50'
                 ];
                 return (
                   <div key={d.page_path} className={`p-4 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-start justify-center transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${bgColors[idx]}`}>
@@ -430,7 +467,7 @@ function AdminDashboard({ onLogout }) {
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 mb-8 bg-zinc-100 dark:bg-zinc-900/50 p-1.5 rounded-2xl w-fit transition-colors">
-          {['settings', 'inbox', 'projects', 'skills', 'experiences', 'social'].map(tab => (
+          {['settings', 'inbox', 'projects', 'certifications', 'skills', 'experiences', 'social'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -727,10 +764,116 @@ function AdminDashboard({ onLogout }) {
             </div>
           )}
 
+          {activeTab === 'certifications' && (
+            <div className="animate-fade-in">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold">Certifications</h2>
+                <button onClick={() => handleOpenCertModal()} className="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-sky-600/20 font-medium">
+                  <span className="material-symbols-rounded">add</span> Add Certification
+                </button>
+              </div>
+
+              {certifications.length === 0 ? (
+                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-12 text-center flex flex-col items-center">
+                  <span className="material-symbols-rounded text-6xl text-zinc-300 dark:text-zinc-700 mb-4">workspace_premium</span>
+                  <h3 className="text-xl font-bold mb-2">No Certifications Yet</h3>
+                  <p className="text-zinc-500 max-w-md mb-6">Add your certifications and skill badges to showcase them on your portfolio.</p>
+                  <button onClick={() => handleOpenCertModal()} className="bg-sky-600 hover:bg-sky-500 text-white px-6 py-2.5 rounded-xl transition-all font-medium">
+                    Add First Certification
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {certifications.map((cert) => (
+                    <div key={cert.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex gap-4 items-start group hover:shadow-md hover:border-sky-500/30 transition-all">
+                      <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 overflow-hidden border border-zinc-200 dark:border-zinc-700">
+                        {cert.badge_img ? (
+                          <img src={getUploadUrl(cert.badge_img)} alt={cert.name} className="w-full h-full object-contain p-1" />
+                        ) : (
+                          <span className="material-symbols-rounded text-zinc-400 text-2xl">workspace_premium</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-zinc-900 dark:text-zinc-100 text-sm line-clamp-2 mb-0.5">{cert.name}</h4>
+                        <p className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-1">{cert.issuer}</p>
+                        {cert.issue_date && <p className="text-xs text-zinc-400">{cert.issue_date}</p>}
+                        <div className="flex gap-2 mt-3">
+                          <button onClick={() => handleOpenCertModal(cert)} className="p-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"><span className="material-symbols-rounded text-sm">edit</span></button>
+                          <button onClick={() => handleDeleteCert(cert.id)} className="p-1.5 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 text-red-600 rounded-lg transition-colors"><span className="material-symbols-rounded text-sm">delete</span></button>
+                          {cert.credential_url && (
+                            <a href={cert.credential_url} target="_blank" rel="noreferrer" className="p-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 rounded-lg transition-colors ml-auto"><span className="material-symbols-rounded text-sm">open_in_new</span></a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
 
       {/* ================== MODALS ================== */}
+
+      {/* CERTIFICATION MODAL */}
+      {isCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget && !loading) setIsCertModalOpen(false); }}>
+          <div className="absolute inset-0 bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm -z-10"></div>
+          <div className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <form onSubmit={handleSaveCert} className="flex flex-col flex-1 min-h-0 rounded-3xl overflow-hidden">
+              <div className="p-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
+                <h3 className="text-xl font-bold">{editingCert ? 'Edit Certification' : 'Add Certification'}</h3>
+              </div>
+              <div ref={certScrollRef} className="p-6 overflow-y-scroll overscroll-contain flex-1 min-h-0 space-y-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Certification Name *</label>
+                  <input required type="text" placeholder="e.g. AWS Solutions Architect" value={certForm.name} onChange={e => setCertForm({ ...certForm, name: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Issuer / Platform *</label>
+                  <input required type="text" placeholder="e.g. Amazon Web Services, Coursera" value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Issue Date</label>
+                  <input type="text" placeholder="e.g. Jan 2024" value={certForm.issue_date} onChange={e => setCertForm({ ...certForm, issue_date: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Credential URL</label>
+                  <input type="url" placeholder="https://verify.link/..." value={certForm.credential_url} onChange={e => setCertForm({ ...certForm, credential_url: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 font-mono text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Badge Image</label>
+                  <div className="flex gap-3 items-center">
+                    {certForm.badge_img && (
+                      <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center p-1">
+                        <img src={getUploadUrl(certForm.badge_img)} alt="Preview" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                    <div className="flex-1 flex gap-2">
+                      <input type="text" placeholder="URL or upload..." value={certForm.badge_img} onChange={e => setCertForm({ ...certForm, badge_img: e.target.value })} className="flex-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
+                      <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
+                        <span className="material-symbols-rounded text-[18px]">upload</span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setCertForm, 'badge_img')} disabled={loading} />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Order Index</label>
+                  <input type="number" value={certForm.order_index} onChange={e => setCertForm({ ...certForm, order_index: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
+                </div>
+              </div>
+              <div className="p-6 pt-4 flex justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800 shrink-0 bg-white dark:bg-zinc-900">
+                <button type="button" onClick={() => setIsCertModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600">Cancel</button>
+                <button type="submit" disabled={loading} className="px-6 py-2.5 rounded-xl font-medium bg-emerald-600 hover:bg-emerald-500 text-white">{loading ? 'Saving...' : 'Save Certification'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
 
       {/* 1. PROJECT MODAL */}
       {isProjectModalOpen && (

@@ -230,3 +230,33 @@ export const getAnalytics = async () => {
   });
   return response.data;
 };
+
+// Certifications
+export const getCertifications = async () => {
+  const response = await axios.get(`${API_URL}/certifications`);
+  return response.data;
+};
+
+export const createCertification = async (data) => {
+  const token = getAuthToken();
+  const response = await axios.post(`${API_URL}/certifications`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const updateCertification = async (id, data) => {
+  const token = getAuthToken();
+  const response = await axios.put(`${API_URL}/certifications/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const deleteCertification = async (id) => {
+  const token = getAuthToken();
+  const response = await axios.delete(`${API_URL}/certifications/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};

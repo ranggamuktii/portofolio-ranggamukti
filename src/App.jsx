@@ -14,6 +14,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Skill from './components/Skill';
 import Experience from './components/Experience';
+import Certifications from './components/Certifications';
 import Work from './components/Work';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -60,6 +61,7 @@ function HomePage() {
         <About />
         <Skill />
         <Experience />
+        <Certifications />
         <Work />
         <Contact />
       </main>
