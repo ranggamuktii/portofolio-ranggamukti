@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getExperiences, getSettings } from '../services/api';
+import { getExperiences, getSettings, getUploadUrl } from '../services/api';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -80,7 +80,7 @@ function Experience() {
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-zinc-900/80 border border-zinc-700/50 flex items-center justify-center shrink-0 shadow-inner overflow-hidden">
                           {exp.company_logo ? (
-                            <img src={exp.company_logo} alt={exp.company} className="w-full h-full object-cover" />
+                            <img src={getUploadUrl(exp.company_logo)} alt={exp.company} className="w-full h-full object-cover" />
                           ) : (
                             <span className="material-symbols-rounded text-zinc-400 text-xl">{exp.logo_icon || (exp.is_education ? 'school' : 'work')}</span>
                           )}

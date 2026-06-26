@@ -123,9 +123,11 @@ function Work() {
             </a>
           </div>
         ) : (
-          <div className="grid gap-x-4 gap-y-5 grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 lg:gap-8 space-y-6 lg:space-y-8">
             {works.map(({ imgSrc, title, tags, projectLink, slug }, key) => (
-              <ProjectCard key={key} imgSrc={imgSrc} title={title} tags={tags} projectLink={projectLink} slug={slug} classes="reveal-up" />
+              <div key={key} className="break-inside-avoid">
+                <ProjectCard imgSrc={imgSrc} title={title} tags={tags} projectLink={projectLink} slug={slug} classes="reveal-up" />
+              </div>
             ))}
           </div>
         )}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import SkillCard from './SkillCard';
 import SkillSphere from './SkillSphere';
-import { getSkills } from '../services/api';
+import { getSkills, getUploadUrl } from '../services/api';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -79,10 +79,14 @@ function Skill() {
                   if (l.includes('mongo')) return '/mongodb.svg';
                   if (l.includes('java')) return '/javascript.svg';
                   if (l.includes('css')) return '/css3.svg';
+                  if (l.includes('laravel')) return '/laravel.svg';
+                  if (l.includes('mysql')) return '/mysql.svg';
+                  if (l.includes('postgres')) return '/postgresql.svg';
+                  if (l.includes('git')) return '/git.svg';
                   return `https://ui-avatars.com/api/?name=${encodeURIComponent(lbl)}&background=38bdf8&color=fff&rounded=true&bold=true`;
                 };
                 return (
-                  <SkillCard key={id} imgSrc={img_src || getIcon(label)} label={label} desc={description || 'Development Tool'} classes="reveal-up" />
+                  <SkillCard key={id} imgSrc={img_src ? getUploadUrl(img_src) : getIcon(label)} label={label} desc={description || 'Development Tool'} classes="reveal-up" />
                 );
               })}
             </div>

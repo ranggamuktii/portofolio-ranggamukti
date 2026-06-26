@@ -6,7 +6,7 @@ import {
   getSocialLinks, updateSocialLinks,
   getSkills, createSkill, updateSkill, deleteSkill,
   getExperiences, createExperience, updateExperience, deleteExperience,
-  getSettings, updateSettings, uploadImage,
+  getSettings, updateSettings, uploadImage, getUploadUrl,
   getMessages, markMessageRead, deleteMessage, getAnalytics
 } from '../services/api';
 import { ThemeContext } from '../ThemeProvider';
@@ -350,30 +350,79 @@ function AdminDashboard({ onLogout }) {
       <div className="container mx-auto px-6 py-8">
 
         {/* Analytics Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors">
-            <p className="text-zinc-500 text-sm font-medium mb-1">Total Site Views</p>
-            <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">{analytics.totalViews}</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-rounded text-6xl text-sky-500">visibility</span>
+            </div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-500/10 flex items-center justify-center mb-4">
+                <span className="material-symbols-rounded text-sky-600 dark:text-sky-400 text-2xl">monitoring</span>
+              </div>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm font-semibold tracking-wide uppercase mb-1">Total Site Views</p>
+              <h4 className="text-4xl font-black text-zinc-900 dark:text-zinc-50">{analytics.totalViews}</h4>
+            </div>
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-sky-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
           </div>
-          <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors">
-            <p className="text-zinc-500 text-sm font-medium mb-1">Unread Messages</p>
-            <h4 className={`text-2xl font-bold ${analytics.unreadCount > 0 ? 'text-sky-500' : 'text-zinc-400'}`}>{analytics.unreadCount}</h4>
+
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className={`material-symbols-rounded text-6xl ${analytics.unreadCount > 0 ? 'text-amber-500' : 'text-emerald-500'}`}>mark_email_unread</span>
+            </div>
+            <div className="relative z-10">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${analytics.unreadCount > 0 ? 'bg-amber-50 dark:bg-amber-500/10' : 'bg-emerald-50 dark:bg-emerald-500/10'}`}>
+                <span className={`material-symbols-rounded text-2xl ${analytics.unreadCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>mail</span>
+              </div>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm font-semibold tracking-wide uppercase mb-1">Unread Messages</p>
+              <h4 className={`text-4xl font-black ${analytics.unreadCount > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-zinc-900 dark:text-zinc-50'}`}>
+                {analytics.unreadCount}
+              </h4>
+            </div>
+            <div className={`absolute bottom-0 left-0 w-full h-1 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ${analytics.unreadCount > 0 ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
           </div>
-          <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors col-span-1 lg:col-span-2 flex flex-col justify-center">
-            <p className="text-zinc-500 text-sm font-medium mb-3">Top Traffic Breakdown</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {analytics.details.slice(0, 3).map(d => (
-                <div key={d.page_path} className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-start justify-center transition-all hover:border-zinc-200 dark:hover:border-zinc-600">
-                  <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1 truncate w-full" title={d.page_path}>
-                    {d.page_path === '/' ? 'Home Page' : d.page_path}
-                  </span>
-                  <div className="flex items-end gap-1">
-                    <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50 leading-none">{d.view_count}</span>
-                    <span className="text-xs font-medium text-sky-500 mb-0.5">views</span>
+
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300 col-span-1 lg:col-span-2 flex flex-col justify-between group hover:shadow-lg hover:-translate-y-1">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <span className="material-symbols-rounded text-8xl text-indigo-500">leaderboard</span>
+            </div>
+            <div className="relative z-10 mb-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+                <span className="material-symbols-rounded text-indigo-600 dark:text-indigo-400 text-xl">insights</span>
+              </div>
+              <p className="text-zinc-800 dark:text-zinc-200 text-base font-bold tracking-wide">Top Traffic Breakdown</p>
+            </div>
+            
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {analytics.details.slice(0, 3).map((d, idx) => {
+                const textColors = [
+                  'text-fuchsia-600 dark:text-fuchsia-400',
+                  'text-violet-600 dark:text-violet-400',
+                  'text-sky-600 dark:text-sky-400'
+                ];
+                const bgColors = [
+                  'bg-fuchsia-50 dark:bg-fuchsia-500/5',
+                  'bg-violet-50 dark:bg-violet-500/5',
+                  'bg-sky-50 dark:bg-sky-500/5'
+                ];
+                return (
+                  <div key={d.page_path} className={`p-4 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-start justify-center transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${bgColors[idx]}`}>
+                    <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2 truncate w-full" title={d.page_path}>
+                      {d.page_path === '/' ? '🏠 Home Page' : `📄 ${d.page_path}`}
+                    </span>
+                    <div className="flex items-end gap-1.5 w-full">
+                      <span className={`text-2xl font-black ${textColors[idx]} leading-none`}>{d.view_count}</span>
+                      <span className="text-xs font-medium text-zinc-500 dark:text-zinc-500 mb-0.5">views</span>
+                    </div>
                   </div>
+                );
+              })}
+              {analytics.details.length === 0 && (
+                <div className="col-span-3 py-4 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
+                  <span className="text-sm text-zinc-500 italic flex items-center justify-center gap-2">
+                    <span className="material-symbols-rounded text-base animate-spin">sync</span> Tracking views...
+                  </span>
                 </div>
-              ))}
-              {analytics.details.length === 0 && <span className="text-xs text-zinc-500 italic">Tracking views...</span>}
+              )}
             </div>
           </div>
         </div>
@@ -471,7 +520,7 @@ function AdminDashboard({ onLogout }) {
                     return (
                       <div key={project.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">
                         <div className="relative aspect-video overflow-hidden border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800">
-                          <img src={project.img_src || '/images/placeholder.jpg'} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          <img src={project.img_src ? getUploadUrl(project.img_src) : '/images/placeholder.jpg'} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="absolute bottom-4 right-4 flex gap-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                             <button onClick={() => handleOpenProjectModal(project)} className="w-10 h-10 flex items-center justify-center bg-white/90 dark:bg-zinc-900/90 hover:bg-sky-500 hover:text-white text-zinc-900 dark:text-white backdrop-blur-md rounded-xl transition-colors shadow-lg"><span className="material-symbols-rounded text-xl">edit</span></button>
@@ -528,18 +577,35 @@ function AdminDashboard({ onLogout }) {
                 </button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {skills.map(skill => (
-                  <div key={skill.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex flex-col items-center text-center relative group">
-                    {/* Overlay actions */}
-                    <div className="opacity-0 group-hover:opacity-100 absolute inset-0 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-2xl flex items-center justify-center gap-2 transition-opacity">
-                      <button onClick={() => handleOpenSkillModal(skill)} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg shrink-0"><span className="material-symbols-rounded text-sm">edit</span></button>
-                      <button onClick={() => handleDeleteSkill(skill.id)} className="p-2 bg-red-50 text-red-600 rounded-lg shrink-0"><span className="material-symbols-rounded text-sm">delete</span></button>
+                {skills.map(skill => {
+                  const getIcon = (lbl) => {
+                    const l = (lbl || '').toLowerCase();
+                    if (l.includes('react')) return '/react.svg';
+                    if (l.includes('node')) return '/nodejs.svg';
+                    if (l.includes('express')) return '/expressjs.svg';
+                    if (l.includes('tailwind')) return '/tailwindcss.svg';
+                    if (l.includes('mongo')) return '/mongodb.svg';
+                    if (l.includes('java')) return '/javascript.svg';
+                    if (l.includes('css')) return '/css3.svg';
+                    if (l.includes('laravel')) return '/laravel.svg';
+                    if (l.includes('mysql')) return '/mysql.svg';
+                    if (l.includes('postgres')) return '/postgresql.svg';
+                    if (l.includes('git')) return '/git.svg';
+                    return `https://ui-avatars.com/api/?name=${encodeURIComponent(lbl)}&background=38bdf8&color=fff&rounded=true&bold=true`;
+                  };
+                  return (
+                    <div key={skill.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex flex-col items-center text-center relative group">
+                      {/* Overlay actions */}
+                      <div className="opacity-0 group-hover:opacity-100 absolute inset-0 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-2xl flex items-center justify-center gap-2 transition-opacity">
+                        <button onClick={() => handleOpenSkillModal(skill)} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg shrink-0"><span className="material-symbols-rounded text-sm">edit</span></button>
+                        <button onClick={() => handleDeleteSkill(skill.id)} className="p-2 bg-red-50 text-red-600 rounded-lg shrink-0"><span className="material-symbols-rounded text-sm">delete</span></button>
+                      </div>
+                      <img src={skill.img_src ? getUploadUrl(skill.img_src) : getIcon(skill.label)} alt={skill.label} className="w-16 h-16 object-contain mb-3" />
+                      <h4 className="font-bold">{skill.label}</h4>
+                      <span className="text-xs text-zinc-500 capitalize">{skill.category}</span>
                     </div>
-                    <img src={skill.img_src} alt={skill.label} className="w-16 h-16 object-contain mb-3" />
-                    <h4 className="font-bold">{skill.label}</h4>
-                    <span className="text-xs text-zinc-500 capitalize">{skill.category}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -558,7 +624,7 @@ function AdminDashboard({ onLogout }) {
                   <div key={exp.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-6">
                     <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 overflow-hidden">
                       {exp.company_logo ? (
-                        <img src={exp.company_logo} alt={exp.company} className="w-full h-full object-cover" />
+                        <img src={getUploadUrl(exp.company_logo)} alt={exp.company} className="w-full h-full object-cover" />
                       ) : (
                         <span className="material-symbols-rounded">{exp.logo_icon || (exp.is_education ? 'school' : 'work')}</span>
                       )}
@@ -695,12 +761,19 @@ function AdminDashboard({ onLogout }) {
                   <div className="col-span-2 sm:col-span-1">
                     <input type="text" placeholder="Source Code (GitHub Link)" value={projectForm.github_link || ''} onChange={e => setProjectForm({ ...projectForm, github_link: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
                   </div>
-                  <div className="col-span-2 flex gap-2 items-center">
-                    <input type="text" placeholder="Banner Image URL" value={projectForm.img_src || ''} onChange={e => setProjectForm({ ...projectForm, img_src: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
-                    <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
-                      <span className="material-symbols-rounded text-[18px]">upload</span> <span className="hidden sm:inline">Upload</span>
-                      <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setProjectForm, 'img_src')} disabled={loading} />
-                    </label>
+                  <div className="col-span-2 flex gap-4 items-center">
+                    {projectForm.img_src && (
+                      <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
+                        <img src={getUploadUrl(projectForm.img_src)} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1 flex gap-2 items-center">
+                      <input type="text" placeholder="Banner Image URL" value={projectForm.img_src || ''} onChange={e => setProjectForm({ ...projectForm, img_src: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
+                      <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
+                        <span className="material-symbols-rounded text-[18px]">upload</span> <span className="hidden sm:inline">Upload</span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setProjectForm, 'img_src')} disabled={loading} />
+                      </label>
+                    </div>
                   </div>
                   <div className="col-span-2">
                     <textarea required rows={2} placeholder="Short Description / Overview" value={projectForm.description || ''} onChange={e => setProjectForm({ ...projectForm, description: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
@@ -740,12 +813,19 @@ function AdminDashboard({ onLogout }) {
               <div ref={skillScrollRef} className="p-6 overflow-y-scroll overscroll-contain flex-1 min-h-0" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="space-y-4">
                   <input required type="text" placeholder="Skill Label (e.g. React)" value={skillForm.label} onChange={e => setSkillForm({ ...skillForm, label: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
-                  <div className="flex gap-2 items-center">
-                    <input required type="text" placeholder="SVG/Image URL (e.g. /react.svg)" value={skillForm.img_src} onChange={e => setSkillForm({ ...skillForm, img_src: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
-                    <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
-                      <span className="material-symbols-rounded text-[18px]">upload</span> <span className="hidden sm:inline">Upload</span>
-                      <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setSkillForm, 'img_src')} disabled={loading} />
-                    </label>
+                  <div className="flex gap-4 items-center">
+                    {skillForm.img_src && (
+                      <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center p-2">
+                        <img src={getUploadUrl(skillForm.img_src)} alt="Preview" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                    <div className="flex-1 flex gap-2 items-center">
+                      <input required type="text" placeholder="SVG/Image URL (e.g. /react.svg)" value={skillForm.img_src} onChange={e => setSkillForm({ ...skillForm, img_src: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
+                      <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center gap-2 border border-zinc-200 dark:border-zinc-700">
+                        <span className="material-symbols-rounded text-[18px]">upload</span> <span className="hidden sm:inline">Upload</span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setSkillForm, 'img_src')} disabled={loading} />
+                      </label>
+                    </div>
                   </div>
                   <select required value={skillForm.category} onChange={e => setSkillForm({ ...skillForm, category: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5">
                     <option value="frontend">Frontend</option>
@@ -793,12 +873,19 @@ function AdminDashboard({ onLogout }) {
                     <input type="text" placeholder="End Date (e.g. Present, 2024)" value={expForm.end_date} onChange={e => setExpForm({ ...expForm, end_date: e.target.value })} className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5" />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
-                    <div className="flex gap-2 items-center">
-                      <input type="text" placeholder="Company Logo URL" value={expForm.company_logo || ''} onChange={e => setExpForm({ ...expForm, company_logo: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
-                      <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center justify-center border border-zinc-200 dark:border-zinc-700">
-                        <span className="material-symbols-rounded text-[18px]">upload</span>
-                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setExpForm, 'company_logo')} disabled={loading} />
-                      </label>
+                    <div className="flex gap-4 items-center">
+                      {expForm.company_logo && (
+                        <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center p-1">
+                          <img src={getUploadUrl(expForm.company_logo)} alt="Preview" className="w-full h-full object-contain" />
+                        </div>
+                      )}
+                      <div className="flex-1 flex gap-2 items-center">
+                        <input type="text" placeholder="Company Logo URL" value={expForm.company_logo || ''} onChange={e => setExpForm({ ...expForm, company_logo: e.target.value })} className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-2.5 min-w-0" />
+                        <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors shrink-0 flex items-center justify-center border border-zinc-200 dark:border-zinc-700">
+                          <span className="material-symbols-rounded text-[18px]">upload</span>
+                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, setExpForm, 'company_logo')} disabled={loading} />
+                        </label>
+                      </div>
                     </div>
                   </div>
                   <div className="col-span-2 sm:col-span-1">
