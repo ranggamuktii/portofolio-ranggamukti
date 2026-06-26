@@ -14,14 +14,14 @@ try {
     // Create table if not exists (in case not yet created by API)
     $db->exec("
         CREATE TABLE IF NOT EXISTS certifications (
-            id             INTEGER PRIMARY KEY AUTOINCREMENT,
-            name           TEXT    NOT NULL,
-            issuer         TEXT    NOT NULL DEFAULT '',
-            issue_date     TEXT,
+            id             INT AUTO_INCREMENT PRIMARY KEY,
+            name           VARCHAR(255) NOT NULL,
+            issuer         VARCHAR(255) NOT NULL DEFAULT '',
+            issue_date     VARCHAR(50),
             credential_url TEXT,
             badge_img      TEXT,
-            order_index    INTEGER DEFAULT 0,
-            created_at     DATETIME DEFAULT CURRENT_TIMESTAMP
+            order_index    INT DEFAULT 0,
+            created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ");
 
