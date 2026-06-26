@@ -74,7 +74,7 @@ function Footer() {
               <ul>
                 {dynamicSocials.map(({ platform, href }, key) => (
                   <li key={key}>
-                    <a href={href} target="_blank" rel="noreferrer" className="block text-sm text-zinc-400 py-1 transition-colors hover:text-zinc-200 reveal-up capitalize">
+                    <a href={href} target="_blank" rel="noreferrer" className="block text-sm text-zinc-400 py-1 transition-colors hover:text-zinc-200 animate-fadeIn capitalize" style={{ animationDelay: `${key * 0.1}s` }}>
                       {platform}
                     </a>
                   </li>
